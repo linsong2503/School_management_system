@@ -19,14 +19,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Route imports
 import teacherRoute from "./routes/teacherRoute";
 
-
-
-
 // Routes
-app.get("/",(req,res)=>{
-    res.send("This is home route");
-})
-app.use("/teachers",teacherRoute);
+app.get("/", (req, res) => {
+  res.send("This is home route");
+});
+app.use("/teachers", teacherRoute);
 /* Server */
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
