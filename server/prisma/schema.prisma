@@ -83,7 +83,7 @@ model Class {
   lessons       Lesson[]
   students      Student[]
   gradeId       Int
-  grade         Grade          @relation(fields: [gradeId], references: [id])
+  grade         Grade   @relation(fields: [gradeId], references: [id])
   events        Event[]
   announcements Announcement[]
 }
