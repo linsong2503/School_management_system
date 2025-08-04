@@ -1,9 +1,7 @@
 import { Response, Request } from "express";
 import { PrismaClient } from "@prisma/client";
-import { Subject, Class } from "@prisma/client";
 const prisma = new PrismaClient();
-type subjects = Subject[];
-type classes = Class[];
+
 export const getTeachers = async (
   req: Request,
   res: Response
@@ -12,11 +10,53 @@ export const getTeachers = async (
     const teachers = await prisma.teacher.findMany({
       include: {
         subjects: true,
+        lessons:true,
         classes: true,
       },
     });
     res.json(teachers);
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving teachers" });
+  } catch (error:any) {
+    res.status(500).json({ message: `Error retrieving teachers: ${error.message}` });
+  }
+};
+
+export const createTeacher = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const {
+    id,
+    username,
+    name,
+    surname,
+    email,
+    phone,
+    address,
+    img,
+    bloodType,
+    sex,
+    subjects,
+    birthday,
+  } = req.body;
+  try {
+    const newTeacher = await prisma.teacher.create({
+      data: {
+        id,
+        username,
+        name,
+        surname,
+        email,
+        phone,
+        address,
+        img,
+        bloodType,
+        sex,
+        subjects,
+        birthday,
+      },
+    });
+    res.status(201).json(newTeacher);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error creating teacher: ${error.message}` });
   }
 };

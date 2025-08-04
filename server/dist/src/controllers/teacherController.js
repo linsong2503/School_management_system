@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTeachers = void 0;
+exports.createTeacher = exports.getTeachers = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getTeachers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -17,13 +17,40 @@ const getTeachers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const teachers = yield prisma.teacher.findMany({
             include: {
                 subjects: true,
+                lessons: true,
                 classes: true,
             },
         });
         res.json(teachers);
     }
     catch (error) {
-        res.status(500).json({ message: "Error retrieving teachers" });
+        res.status(500).json({ message: `Error retrieving teachers: ${error.message}` });
     }
 });
 exports.getTeachers = getTeachers;
+const createTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, username, name, surname, email, phone, address, img, bloodType, sex, subjects, birthday, } = req.body;
+    try {
+        const newTeacher = yield prisma.teacher.create({
+            data: {
+                id,
+                username,
+                name,
+                surname,
+                email,
+                phone,
+                address,
+                img,
+                bloodType,
+                sex,
+                subjects,
+                birthday,
+            },
+        });
+        res.status(201).json(newTeacher);
+    }
+    catch (error) {
+        res.status(500).json({ message: `Error creating teacher: ${error.message}` });
+    }
+});
+exports.createTeacher = createTeacher;
