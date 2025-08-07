@@ -33,12 +33,10 @@ import InputAdornment from "@mui/material/InputAdornment";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
-
 import { useGetTeachersQuery } from "@/state/api";
-
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 import { Class, Lesson, Subject } from "@prisma/client";
-
+import UserActions from "@/app/(components)/UserActions";
 type OwnerState = {
   expanded: boolean;
 };
@@ -254,7 +252,9 @@ const Teachers = () => {
       type: "actions",
       headerName: "Actions",
       width: 180,
-      cellClassName: "actions",
+      renderCell: (params) => {
+        return <UserActions {...{ params }} />;
+      },
     },
   ];
   return (

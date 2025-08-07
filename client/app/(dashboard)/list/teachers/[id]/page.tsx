@@ -21,11 +21,8 @@ const months = [
   "November",
   "December",
 ];
-const SingleTeacherPage = async ({
-  params: { id },
-}: {
-  params: { id: string };
-}) => {
+const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
+  const { id } = await params;
   const teacher:
     | (Teacher & {
         _count: { subjects: number; lessons: number; classes: number };
@@ -191,7 +188,7 @@ const SingleTeacherPage = async ({
             </Link>
           </div>
         </div>
-         <PerformanceChart />
+        <PerformanceChart />
         <Announcements />
       </div>
     </div>

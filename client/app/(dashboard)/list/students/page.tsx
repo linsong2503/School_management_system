@@ -1,11 +1,7 @@
 import { Student, Class, Grade } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import TableSearch from "@/app/(components)/TableSearch";
-import Table from "@/app/(components)/Table";
 import prisma from "@/lib/prisma";
-import { ITEMS_PER_PAGE } from "@/lib/settings";
-import Pagination from "@/app/(components)/pagination";
 const columns = [
   {
     header: "Info",
