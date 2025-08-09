@@ -1,8 +1,11 @@
+import LoadingSpinner from '@/app/(components)/Loading'
 import React from 'react'
 
 function StudentPage() {
   return (
-    <p>StudentPage</p>
+    <>
+    Studentpage
+    </>
   )
 }
 

@@ -3,10 +3,10 @@ import Image from "next/image";
 import { Teacher } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import BigCalendar from "@/app/(components)/BigCalendar";
-import Announcements from "@/app/(components)/Announcements";
+import BigCalendar from "@/app/(components)/Calendars/BigCalendar";
+import Announcements from "@/app/(components)/Users/Announcements";
 import Link from "next/link";
-import PerformanceChart from "@/app/(components)/PerformanceChart";
+import PerformanceChart from "@/app/(components)/Charts/PerformanceChart";
 const months = [
   "January",
   "February",

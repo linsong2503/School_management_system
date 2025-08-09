@@ -1,5 +1,5 @@
 import React from 'react'
-import BigCalendar from '@/app/(components)/BigCalendar'
+import BigCalendar from '@/app/(components)/Calendars/BigCalendar'
 const SchedulePage = () => {
   return (
     <div>

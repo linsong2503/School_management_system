@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Preview, Edit, Delete } from "@mui/icons-material";
-import Link from "next/link";
 const UserActions = ({ params }: any) => {
   return (
     <Box>

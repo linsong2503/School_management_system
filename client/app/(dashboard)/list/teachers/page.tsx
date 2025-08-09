@@ -36,7 +36,8 @@ import Typography from "@mui/material/Typography";
 import { useGetTeachersQuery } from "@/state/api";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 import { Class, Lesson, Subject } from "@prisma/client";
-import UserActions from "@/app/(components)/UserActions";
+import UserActions from "@/app/(components)/Users/UserActions";
+import LoadingSpinner from "@/app/(components)/Loading";
 type OwnerState = {
   expanded: boolean;
 };
@@ -203,8 +204,13 @@ function CustomToolbar() {
 }
 
 const Teachers = () => {
-  const { data: teacherData, isLoading } = useGetTeachersQuery();
-  if (isLoading) return <div>Loading...</div>;
+  const { data: teacherData, isLoading, isError } = useGetTeachersQuery();
+  if (isLoading)
+    return (
+      <div>
+        <LoadingSpinner color="pink" size="small" />
+      </div>
+    );
   // if (isError || !teacherData) return <div>Error fetching teachers</div>;
   const columns: GridColDef[] = [
     { field: "id", headerName: "Teacher ID", width: 80 },
@@ -258,6 +264,7 @@ const Teachers = () => {
     },
   ];
   return (
+    <>
     <div style={{ height: 550, width: "100%" }}>
       <DataGrid
         rows={teacherData}
@@ -271,6 +278,8 @@ const Teachers = () => {
         className={dataGridClassNames}
       />
     </div>
+    </>
+    
   );
 };
 export default Teachers;

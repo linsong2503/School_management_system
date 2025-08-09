@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import UserCard from "@/app/(components)/UserCard";
-import RadChart from "@/app/(components)/RadChart";
-import FinanceChart from "@/app/(components)/FinanceChart";
-import AttendanceChart from "@/app/(components)/AttendanceChart";
-import SideCalendar from "@/app/(components)/Calendar";
-import Announcements from "@/app/(components)/Announcements";
+import UserCard from "@/app/(components)/Users/UserCard";
+import RadChart from "@/app/(components)/Charts/RadChart";
+import FinanceChart from "@/app/(components)/Charts/FinanceChart";
+import AttendanceChart from "@/app/(components)/Charts/AttendanceChart";
+import SideCalendar from "@/app/(components)/Calendars/Calendar";
+import Announcements from "@/app/(components)/Users/Announcements";
 const Adminpage = () => {
   return (
     <div className="p-4 flex flex-col md:flex-row gap-4">

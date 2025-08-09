@@ -1,4 +1,4 @@
-import { Subject, UserSex, Class, Lesson } from "@prisma/client";
+import { Subject, UserSex, Class, Lesson, Student } from "@prisma/client";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Teacher {
@@ -21,7 +21,7 @@ export interface Teacher {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
   reducerPath: "api",
-  tagTypes: ["Teachers"],
+  tagTypes: ["Teachers","Students"],
   endpoints: (build) => ({
     getTeachers: build.query<Teacher[], void>({
       query: () => "teachers",
@@ -35,6 +35,10 @@ export const api = createApi({
       }),
       invalidatesTags: ["Teachers"],
     }),
+    getStudents: build.query<Student[],void>({
+      query: () => "students",
+      providesTags: ["Students"]
+    })
   }),
 });
 
