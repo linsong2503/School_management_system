@@ -21,11 +21,15 @@ app.use((0, morgan_1.default)("common"));
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // Route imports
 const teacherRoute_1 = __importDefault(require("./routes/teacherRoute"));
+const parentRoute_1 = __importDefault(require("./routes/parentRoute"));
+const studentRoute_1 = __importDefault(require("./routes/studentRoute"));
 // Routes
 app.get("/", (req, res) => {
     res.send("This is home route");
 });
 app.use("/teachers", teacherRoute_1.default);
+app.use("/students", studentRoute_1.default);
+app.use("/parents", parentRoute_1.default);
 /* Server */
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

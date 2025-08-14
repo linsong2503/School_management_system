@@ -17,7 +17,6 @@ import {
   QuickFilterTrigger,
   GridColDef,
   GridRenderCellParams,
-  GridActionsCellItem,
 } from "@mui/x-data-grid";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import Tooltip from "@mui/material/Tooltip";
@@ -32,16 +31,19 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
-import Typography from "@mui/material/Typography";
 import { useGetTeachersQuery } from "@/state/api";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 import { Class, Lesson, Subject } from "@prisma/client";
 import UserActions from "@/app/(components)/Users/UserActions";
 import LoadingSpinner from "@/app/(components)/Loading";
+import Header from "@/app/(components)/Header";
 type OwnerState = {
   expanded: boolean;
 };
-
+type Props = {
+  id: string;
+  setIsModalOpen: (isOpen: boolean) => void;
+};
 const StyledQuickFilter = styled(QuickFilter)({
   display: "grid",
   alignItems: "center",
@@ -75,10 +77,6 @@ function CustomToolbar() {
 
   return (
     <Toolbar>
-      <Typography fontWeight="bold" variant="h5" sx={{ flex: 1, mx: 0.5 }}>
-        Teacher
-      </Typography>
-
       <Tooltip title="Columns">
         <ColumnsPanelTrigger render={<ToolbarButton />}>
           <ViewColumnIcon fontSize="small" />
@@ -203,14 +201,9 @@ function CustomToolbar() {
   );
 }
 
-const Teachers = () => {
+const Teachers = ({ id, setIsModalOpen }: Props) => {
   const { data: teacherData, isLoading, isError } = useGetTeachersQuery();
-  if (isLoading)
-    return (
-      <div>
-        <LoadingSpinner color="pink" size="small" />
-      </div>
-    );
+  if (isLoading) return <LoadingSpinner color="pink" size="small" />;
   // if (isError || !teacherData) return <div>Error fetching teachers</div>;
   const columns: GridColDef[] = [
     { field: "id", headerName: "Teacher ID", width: 80 },
@@ -221,7 +214,7 @@ const Teachers = () => {
     { field: "email", headerName: "Email", width: 150, editable: true },
     { field: "phone", headerName: "Phone", width: 100, editable: true },
     { field: "address", headerName: "Address", width: 200, editable: true },
-    { field: "bloodType", headerName: "BloodType", width: 80, editable: true },
+    { field: "bloodType", headerName: "Blood Type", width: 80, editable: true },
     { field: "sex", headerName: "Sex", width: 80, editable: true },
     {
       field: "subjects",
@@ -265,21 +258,34 @@ const Teachers = () => {
   ];
   return (
     <>
-    <div style={{ height: 550, width: "100%" }}>
-      <DataGrid
-        rows={teacherData}
-        columns={columns}
-        editMode="row"
-        pagination
-        slots={{
-          toolbar: CustomToolbar,
-        }}
-        showToolbar
-        className={dataGridClassNames}
-      />
-    </div>
+      <div className="pt-3">
+        <Header
+          name="Teachers"
+          buttonComponent={
+            <button
+              className="flex items-center rounded bg-blue-300 px-3 py-2 text-black font-bold hover:bg-blue-600 hover:text-white cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            >
+              New Teacher
+            </button>
+          }
+          // isSmallText
+        />
+      </div>
+      <div style={{ height: 500, width: "100%" }}>
+        <DataGrid
+          rows={teacherData}
+          columns={columns}
+          editMode="row"
+          pagination
+          slots={{
+            toolbar: CustomToolbar,
+          }}
+          showToolbar
+          className={dataGridClassNames}
+        />
+      </div>
     </>
-    
   );
 };
 export default Teachers;

@@ -1,112 +1,272 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Parent, Student } from "@prisma/client";
-import prisma from "@/lib/prisma";
-import TableSearch from "@/app/(components)/TableSearch";
-import { ITEMS_PER_PAGE } from "@/lib/settings";
-import Table from "@/app/(components)/Table";
-import Pagination from "@/app/(components)/pagination";
-type ParentList = Parent & { students: Student[] };
-
-const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-  },
-  {
-    header: "Student Names",
-    accessor: "studentnames",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Phone",
-    accessor: "address",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Address",
-    accessor: "address",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "actions",
-  },
-];
-
-const RenderRow = (item: ParentList) => {
-  return (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-blue-50"
-    >
-      <td className="hidden md:table-cell">
-        <div className="flex flex-col">
-          <h1 className="font-semibold hidden md:block">{item.name}</h1>
-          <p className="text-xs">{item.email}</p>
-        </div>
-      </td>
-      <td className="hidden md:table-cell">
-        {item.students.map((student) => student.name).join(",")}
-      </td>
-      <td className="hidden md:table-cell">{item.phone}</td>
-      <td className="hidden md:table-cell">{item.address}</td>
-      <td>
-        <div className="flex items-center gap-3">
-          <Link href={`/list/parents/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full object-cover bg-green-200 cursor-pointer">
-              <Image src={"/view.png"} alt="" width={15} height={15} />
-            </button>
-          </Link>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 cursor-pointer">
-            <Image src="/delete.png" alt="" width={15} height={15} />
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import {
+  DataGrid,
+  Toolbar,
+  ToolbarButton,
+  ColumnsPanelTrigger,
+  FilterPanelTrigger,
+  ExportCsv,
+  ExportPrint,
+  QuickFilter,
+  QuickFilterControl,
+  QuickFilterClear,
+  QuickFilterTrigger,
+  GridColDef,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
+import Tooltip from "@mui/material/Tooltip";
+import Menu from "@mui/material/Menu";
+import Badge from "@mui/material/Badge";
+import ViewColumnIcon from "@mui/icons-material/ViewColumn";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
+import { useGetParentsQuery } from "@/state/api";
+import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
+import { Student } from "@prisma/client";
+import UserActions from "@/app/(components)/Users/UserActions";
+import LoadingSpinner from "@/app/(components)/Loading";
+import Header from "@/app/(components)/Header";
+type OwnerState = {
+  expanded: boolean;
 };
-const ParentListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
-  const [data, count] = await prisma.$transaction([
-    prisma.parent.findMany({
-      include: {
-        students: true,
+type Props = {
+  p_id: string;
+  setIsModalOpen: (isOpen: boolean) => void;
+};
+const StyledQuickFilter = styled(QuickFilter)({
+  display: "grid",
+  alignItems: "center",
+});
+
+const StyledToolbarButton = styled(ToolbarButton)<{ ownerState: OwnerState }>(
+  ({ theme, ownerState }) => ({
+    gridArea: "1 / 1",
+    width: "min-content",
+    height: "min-content",
+    zIndex: 1,
+    opacity: ownerState.expanded ? 0 : 1,
+    pointerEvents: ownerState.expanded ? "none" : "auto",
+    transition: theme.transitions.create(["opacity"]),
+  })
+);
+
+const StyledTextField = styled(TextField)<{
+  ownerState: OwnerState;
+}>(({ theme, ownerState }) => ({
+  gridArea: "1 / 1",
+  overflowX: "clip",
+  width: ownerState.expanded ? 260 : "var(--trigger-width)",
+  opacity: ownerState.expanded ? 1 : 0,
+  transition: theme.transitions.create(["width", "opacity"]),
+}));
+
+function CustomToolbar() {
+  const [exportMenuOpen, setExportMenuOpen] = React.useState(false);
+  const exportMenuTriggerRef = React.useRef<HTMLButtonElement>(null);
+
+  return (
+    <Toolbar>
+      <Tooltip title="Columns">
+        <ColumnsPanelTrigger render={<ToolbarButton />}>
+          <ViewColumnIcon fontSize="small" />
+        </ColumnsPanelTrigger>
+      </Tooltip>
+
+      <Tooltip title="Filters">
+        <FilterPanelTrigger
+          render={(props, state) => (
+            <ToolbarButton {...props} color="default">
+              <Badge
+                badgeContent={state.filterCount}
+                color="primary"
+                variant="dot"
+              >
+                <FilterListIcon fontSize="small" />
+              </Badge>
+            </ToolbarButton>
+          )}
+        />
+      </Tooltip>
+
+      <Divider
+        orientation="vertical"
+        variant="middle"
+        flexItem
+        sx={{ mx: 0.5 }}
+      />
+
+      <Tooltip title="Export">
+        <ToolbarButton
+          ref={exportMenuTriggerRef}
+          id="export-menu-trigger"
+          aria-controls="export-menu"
+          aria-haspopup="true"
+          aria-expanded={exportMenuOpen ? "true" : undefined}
+          onClick={() => setExportMenuOpen(true)}
+        >
+          <FileDownloadIcon fontSize="small" />
+        </ToolbarButton>
+      </Tooltip>
+
+      <Menu
+        id="export-menu"
+        anchorEl={exportMenuTriggerRef.current}
+        open={exportMenuOpen}
+        onClose={() => setExportMenuOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{
+          list: {
+            "aria-labelledby": "export-menu-trigger",
+          },
+        }}
+      >
+        <ExportPrint
+          render={<MenuItem />}
+          onClick={() => setExportMenuOpen(false)}
+        >
+          Print
+        </ExportPrint>
+        <ExportCsv
+          render={<MenuItem />}
+          onClick={() => setExportMenuOpen(false)}
+        >
+          Download as CSV
+        </ExportCsv>
+      </Menu>
+
+      <StyledQuickFilter>
+        <QuickFilterTrigger
+          render={(triggerProps, state) => (
+            <Tooltip title="Search" enterDelay={0}>
+              <StyledToolbarButton
+                {...triggerProps}
+                ownerState={{ expanded: state.expanded }}
+                color="default"
+                aria-disabled={state.expanded}
+              >
+                <SearchIcon fontSize="small" />
+              </StyledToolbarButton>
+            </Tooltip>
+          )}
+        />
+        <QuickFilterControl
+          render={({ ref, ...controlProps }, state) => (
+            <StyledTextField
+              {...controlProps}
+              ownerState={{ expanded: state.expanded }}
+              inputRef={ref}
+              aria-label="Search"
+              placeholder="Search..."
+              size="small"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: state.value ? (
+                    <InputAdornment position="end">
+                      <QuickFilterClear
+                        edge="end"
+                        size="small"
+                        aria-label="Clear search"
+                        material={{ sx: { marginRight: -0.75 } }}
+                      >
+                        <CancelIcon fontSize="small" />
+                      </QuickFilterClear>
+                    </InputAdornment>
+                  ) : null,
+                  ...controlProps.slotProps?.input,
+                },
+                ...controlProps.slotProps,
+              }}
+            />
+          )}
+        />
+      </StyledQuickFilter>
+    </Toolbar>
+  );
+}
+
+const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
+  const { data: parentsData, isLoading, isError } = useGetParentsQuery();
+  if (isLoading) return <LoadingSpinner color="pink" size="small" />;
+  // if (isError || !teacherData) return <div>Error fetching teachers</div>;
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "Parents ID", width: 80 },
+    { field: "username", headerName: "Username", width: 100, editable: true },
+    { field: "name", headerName: "Name", width: 100, editable: true },
+    { field: "surname", headerName: "Surname", width: 100, editable: true },
+    { field: "email", headerName: "Email", width: 150, editable: true },
+    { field: "phone", headerName: "Phone", width: 100, editable: true },
+    { field: "address", headerName: "Address", width: 150, editable: true },
+    {
+      field: "students",
+      headerName: "Student Id",
+      width: 250,
+      renderCell: (cellValues: GridRenderCellParams<Student>) => {
+        return (
+          <>
+            <div className="">
+              {cellValues.value.map((p: { id: string }) => p.id).join(",") ||
+                []}
+            </div>
+          </>
+        );
       },
-      take: ITEMS_PER_PAGE,
-      skip: ITEMS_PER_PAGE * (p - 1),
-    }),
-    prisma.parent.count(),
-  ]);
+    },
+    // {
+    //   field: "student2",
+    //   headerName: "Students",
+    //   width: 150,
+    //   renderCell: (cellValues: GridRenderCellParams<Student[]>) => {
+    //     return (
+    //       <div>
+    //         {cellValues.value.map((p: { name: string }) => p.name).join(",") || []}
+    //       </div>
+    //     );
+    //   },
+    // },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 180,
+      renderCell: (params) => {
+        return <UserActions {...{ params }} />;
+      },
+    },
+  ];
   return (
-    <div className="bg-white p-4 my-4 flex-1 mt-0 rounded-md">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold hidden md:block">All Parents</h1>
-        <div className="flex flex-col md:flex-row md:w-auto w-full justify-between items-center gap-5">
-          <TableSearch />
-          <div className="flex items-center gap-5 self-end">
-            <button className="bg-amber-200 rounded-full object-cover p-2 w-8 h-8 cursor-pointer">
-              <Image src={"/filter.png"} alt="" width={16} height={16} />
-            </button>
-            <button className="bg-amber-200 rounded-full object-cover p-2 w-8 h-8 cursor-pointer">
-              <Image src={"/sort.png"} alt="" width={16} height={16} />
-            </button>
-            <button className="bg-amber-200 rounded-full object-cover p-2 w-8 h-8 cursor-pointer">
-              <Image src={"/create.png"} alt="" width={16} height={16} />
-            </button>
-          </div>
-        </div>
+    <>
+      <div className="pt-3">
+        <Header name="Parents" />
       </div>
-      <Table columns={columns} renderRow={RenderRow} data={data} />
-      <Pagination page={p} count={count} />
-    </div>
+      <div style={{ height: 500, width: "100%" }}>
+        <DataGrid
+          rows={parentsData}
+          columns={columns}
+          editMode="row"
+          pagination
+          slots={{
+            toolbar: CustomToolbar,
+          }}
+          showToolbar
+          className={dataGridClassNames}
+        />
+      </div>
+    </>
   );
 };
-
 export default ParentListPage;

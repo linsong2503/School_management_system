@@ -18,14 +18,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Route imports
 import teacherRoute from "./routes/teacherRoute";
-
+import parentRoute from "./routes/parentRoute";
+import studentRoute from "./routes/studentRoute";
 // Routes
 app.get("/", (req, res) => {
   res.send("This is home route");
 });
 app.use("/teachers", teacherRoute);
+app.use("/students", studentRoute);
+app.use("/parents", parentRoute);
+
 /* Server */
-const port = process.env.PORT || 3000;  
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on part ${port}`);
 });

@@ -1,5 +1,5 @@
 export const dataGridClassNames =
-  "border border-gray-200 bg-white shadow dark:border-stroke-dark dark:bg-dark-secondary dark:text-gray-200";
+  "border border-gray-200 bg-white shadow ";
 
 export const dataGridSxStyles = () => {
   return {
@@ -9,7 +9,7 @@ export const dataGridSxStyles = () => {
       },
     },
     "& .MuiDataGrid-cell": {
-      border: "none",
+      border:"none"
     },
     "& .MuiDataGrid-row": {
       borderBottom: "1px solid #e5e7eb",
@@ -17,5 +17,6 @@ export const dataGridSxStyles = () => {
     "& .MuiDataGrid-withBorderColor": {
       borderColor: "#e5e7eb",
     },
+  
   };
 };
