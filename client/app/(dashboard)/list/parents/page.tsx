@@ -213,14 +213,14 @@ const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
     { field: "address", headerName: "Address", width: 150, editable: true },
     {
       field: "students",
-      headerName: "Student Id",
-      width: 250,
+      headerName: "Students Id",
+      width: 400,
       renderCell: (cellValues: GridRenderCellParams<Student>) => {
         return (
           <>
-            <div className="">
+            <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
               {cellValues.value.map((p: { id: string }) => p.id).join(",") ||
-                []}
+                "null"}
             </div>
           </>
         );
@@ -230,10 +230,10 @@ const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
     //   field: "student2",
     //   headerName: "Students",
     //   width: 150,
-    //   renderCell: (cellValues: GridRenderCellParams<Student[]>) => {
+    //   renderCell: (cellValues: GridRenderCellParams<Student>) => {
     //     return (
     //       <div>
-    //         {cellValues.value.map((p: { name: string }) => p.name).join(",") || []}
+    //         {cellValues.value.map((pr: { name: string }) => pr.name).join(",") || []}
     //       </div>
     //     );
     //   },
@@ -251,7 +251,17 @@ const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
   return (
     <>
       <div className="pt-3">
-        <Header name="Parents" />
+        <Header
+          name="Parents"
+          buttonComponent={
+            <button
+              className="flex items-center rounded bg-blue-300 px-3 py-2 text-black font-bold hover:bg-blue-600 hover:text-white cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            >
+              New Parent
+            </button>
+          }
+        />
       </div>
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid

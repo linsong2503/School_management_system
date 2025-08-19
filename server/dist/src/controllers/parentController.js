@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getParents = void 0;
+exports.createParents = exports.getParents = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,3 +28,27 @@ const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getParents = getParents;
+const createParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, username, name, surname, email, phone, address, createdAt } = req.body;
+    try {
+        const newParents = yield prisma.parent.create({
+            data: {
+                id,
+                username,
+                name,
+                surname,
+                email,
+                phone,
+                address,
+                createdAt,
+            },
+        });
+        res.status(201).json({ message: `Created parents successfully!` });
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: `Error creating parents: ${error.message}` });
+    }
+});
+exports.createParents = createParents;

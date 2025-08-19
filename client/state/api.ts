@@ -15,14 +15,15 @@ export interface Teacher {
   surname: string;
   email: string;
   phone: string;
+  img:string;
   address: string;
   bloodType: string;
-  sex: UserSex;
+  sex: User_Sex;
   createdAt: string;
   birthday: string;
-  subjects: Subject[];
-  lessons: Lesson[];
-  classes: Class[];
+  subjects: string;
+  lessons: string;
+  classes: string;
 }
 export interface Parents {
   id: string;
@@ -33,6 +34,19 @@ export interface Parents {
   phone: string;
   address: string;
   students: Student[];
+}
+export enum Subjects {
+  na = "N/A",
+  maths = "Mathemactics",
+  physics = "Physics",
+  chemistry = "Chemistry",
+  biology = "Biology",
+  history = "History",
+  literature = "Literature"
+}
+export enum User_Sex {
+  MALE,
+  FEMALE
 }
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
