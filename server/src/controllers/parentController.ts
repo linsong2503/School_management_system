@@ -25,25 +25,14 @@ export const createParents = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { id, username, name, surname, email, phone, address, createdAt } =
-    req.body;
   try {
-    const newParents = await prisma.parent.create({
-      data: {
-        id,
-        username,
-        name,
-        surname,
-        email,
-        phone,
-        address,
-        createdAt,
-      },
+    const newParent = await prisma.parent.create({
+      data: req.body,
     });
-    res.status(201).json({ message: `Created parents successfully!` });
+    res.status(201).json(newParent);
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: `Error creating parents: ${error.message}` });
+      .json({ message: `Error creating parent: ${error.message}` });
   }
 };

@@ -30,18 +30,19 @@ import InputAdornment from "@mui/material/InputAdornment";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
 import { useGetParentsQuery } from "@/state/api";
-import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
+import { dataGridClassNames } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import UserActions from "@/app/(components)/Users/UserActions";
 import LoadingSpinner from "@/app/(components)/Loading";
-import Header from "@/app/(components)/Header";
+import TableHeader from "../../../(components)/TableHeader";
+import NotFound from "@/app/(components)/Error";
 type OwnerState = {
   expanded: boolean;
 };
-type Props = {
-  p_id: string;
-  setIsModalOpen: (isOpen: boolean) => void;
-};
+// type Props = {
+//   p_id: string;
+//   setIsModalOpen: (isOpen: boolean) => void;
+// };
 const StyledQuickFilter = styled(QuickFilter)({
   display: "grid",
   alignItems: "center",
@@ -199,10 +200,10 @@ function CustomToolbar() {
   );
 }
 
-const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
+const ParentListPage = () => {
   const { data: parentsData, isLoading, isError } = useGetParentsQuery();
   if (isLoading) return <LoadingSpinner color="pink" size="small" />;
-  // if (isError || !teacherData) return <div>Error fetching teachers</div>;
+  // if (isError || !parentsData) return <div><NotFound /></div>;
   const columns: GridColDef[] = [
     { field: "id", headerName: "Parents ID", width: 80 },
     { field: "username", headerName: "Username", width: 100, editable: true },
@@ -214,7 +215,7 @@ const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
     {
       field: "students",
       headerName: "Students Id",
-      width: 400,
+      width: 270,
       renderCell: (cellValues: GridRenderCellParams<Student>) => {
         return (
           <>
@@ -251,17 +252,7 @@ const ParentListPage = ({ p_id, setIsModalOpen }: Props) => {
   return (
     <>
       <div className="pt-3">
-        <Header
-          name="Parents"
-          buttonComponent={
-            <button
-              className="flex items-center rounded bg-blue-300 px-3 py-2 text-black font-bold hover:bg-blue-600 hover:text-white cursor-pointer"
-              onClick={() => setIsModalOpen(true)}
-            >
-              New Parent
-            </button>
-          }
-        />
+        <TableHeader index={3} />
       </div>
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid

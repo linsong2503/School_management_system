@@ -25,7 +25,7 @@ CREATE TABLE "Student" (
     "bloodType" TEXT NOT NULL,
     "sex" "UserSex" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "parentId" TEXT NOT NULL,
+    "parentId" INTEGER NOT NULL,
     "classId" INTEGER NOT NULL,
     "gradeId" INTEGER NOT NULL,
     "birthday" TIMESTAMP(3) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE "Student" (
 
 -- CreateTable
 CREATE TABLE "Teacher" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "surname" TEXT NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE "Teacher" (
 
 -- CreateTable
 CREATE TABLE "Parent" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "surname" TEXT NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE "Class" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "capacity" INTEGER NOT NULL,
-    "supervisorId" TEXT,
+    "supervisorId" INTEGER,
     "gradeId" INTEGER NOT NULL,
 
     CONSTRAINT "Class_pkey" PRIMARY KEY ("id")
@@ -101,7 +101,7 @@ CREATE TABLE "Lesson" (
     "endTime" TIMESTAMP(3) NOT NULL,
     "subjectId" INTEGER NOT NULL,
     "classId" INTEGER NOT NULL,
-    "teacherId" TEXT NOT NULL,
+    "teacherId" INTEGER NOT NULL,
 
     CONSTRAINT "Lesson_pkey" PRIMARY KEY ("id")
 );
@@ -176,7 +176,7 @@ CREATE TABLE "Announcement" (
 -- CreateTable
 CREATE TABLE "_SubjectToTeacher" (
     "A" INTEGER NOT NULL,
-    "B" TEXT NOT NULL,
+    "B" INTEGER NOT NULL,
 
     CONSTRAINT "_SubjectToTeacher_AB_pkey" PRIMARY KEY ("A","B")
 );

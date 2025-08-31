@@ -37,6 +37,7 @@ import { Class, Lesson, Subject } from "@prisma/client";
 import UserActions from "@/app/(components)/Users/UserActions";
 import LoadingSpinner from "@/app/(components)/Loading";
 import Header from "@/app/(components)/Header";
+import NotFound from "@/app/(components)/Error";
 type OwnerState = {
   expanded: boolean;
 };
@@ -204,7 +205,7 @@ function CustomToolbar() {
 const Teachers = ({ id, setIsModalOpen }: Props) => {
   const { data: teacherData, isLoading, isError } = useGetTeachersQuery();
   if (isLoading) return <LoadingSpinner color="pink" size="small" />;
-  // if (isError || !teacherData) return <div>Error fetching teachers</div>;
+  if (isError || !teacherData) return <div><NotFound /></div>;
   const columns: GridColDef[] = [
     { field: "id", headerName: "Teacher ID", width: 80 },
     { field: "username", headerName: "Username", width: 100, editable: true },

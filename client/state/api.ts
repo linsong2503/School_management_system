@@ -1,8 +1,4 @@
 import {
-  Subject,
-  UserSex,
-  Class,
-  Lesson,
   Student,
   Parent,
 } from "@prisma/client";
@@ -26,14 +22,12 @@ export interface Teacher {
   classes: string;
 }
 export interface Parents {
-  id: string;
   username: string;
   name: string;
   surname: string;
   email: string;
   phone: string;
   address: string;
-  students: Student[];
 }
 export enum Subjects {
   na = "N/A",
@@ -73,6 +67,14 @@ export const api = createApi({
       query: () => "parents",
       providesTags: ["Parents"],
     }),
+    createParent: build.mutation<Parent, Partial<Parent>>({
+      query: (parents) => ({
+        url: "parents",
+        method: "POST",
+        body: parents,
+      }),
+      invalidatesTags: ["Parents"],
+    }),
   }),
 });
 
@@ -81,4 +83,5 @@ export const {
   useCreateTeacherMutation,
   useGetStudentsQuery,
   useGetParentsQuery,
+  useCreateParentMutation
 } = api;

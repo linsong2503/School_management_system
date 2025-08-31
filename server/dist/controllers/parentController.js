@@ -29,26 +29,16 @@ const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.getParents = getParents;
 const createParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, username, name, surname, email, phone, address, createdAt } = req.body;
     try {
-        const newParents = yield prisma.parent.create({
-            data: {
-                id,
-                username,
-                name,
-                surname,
-                email,
-                phone,
-                address,
-                createdAt,
-            },
+        const newParent = yield prisma.parent.create({
+            data: req.body,
         });
-        res.status(201).json({ message: `Created parents successfully!` });
+        res.status(201).json(newParent);
     }
     catch (error) {
         res
             .status(500)
-            .json({ message: `Error creating parents: ${error.message}` });
+            .json({ message: `Error creating parent: ${error.message}` });
     }
 });
 exports.createParents = createParents;
