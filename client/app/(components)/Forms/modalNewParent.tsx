@@ -7,7 +7,7 @@ type Props = {
   onClose: () => void;
 };
 
-const ModalNewParent = ({ isOpen, onClose}: Props) => {
+const ModalNewParent = ({ isOpen, onClose }: Props) => {
   const [createParents, { isLoading }] = useCreateParentMutation();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
@@ -15,15 +15,17 @@ const ModalNewParent = ({ isOpen, onClose}: Props) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+
+  const clearForm = () => {
+    setUsername("");
+    setName("");
+    setSurname("");
+    setEmail("");
+    setPhone("");
+    setAddress("");
+  };
   const handleSubmit = async () => {
-    if (
-      !name ||
-      !surname ||
-      !email ||
-      !phone ||
-      !address 
-    )
-      return;
+    if (!name || !surname || !email || !phone || !address ) return;
     await createParents({
       username,
       name,
@@ -31,17 +33,19 @@ const ModalNewParent = ({ isOpen, onClose}: Props) => {
       email,
       phone,
       address,
+      st:"A",
       createdAt: new Date(Date.now()),
+      updatedAt: new Date(Date.now()),
     });
+    clearForm();
   };
   const isFormValid = () => {
     return username && name && surname && email && phone && address;
   };
 
   const inputStyles = "w-full rounded border border-gray-300 p-2 shadow-sm ";
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} name="Create new parent">
+    <Modal isOpen={isOpen} onClose={onClose} name="Create New Parent">
       <form
         className="mt-4 space-y-6"
         onSubmit={(e) => {

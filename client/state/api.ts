@@ -1,9 +1,4 @@
-import {
-  Student,
-  Parent,
-} from "@prisma/client";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
 export interface Teacher {
   id: string;
   username: string;
@@ -11,7 +6,7 @@ export interface Teacher {
   surname: string;
   email: string;
   phone: string;
-  img:string;
+  img: string;
   address: string;
   bloodType: string;
   sex: User_Sex;
@@ -28,6 +23,10 @@ export interface Parents {
   email: string;
   phone: string;
   address: string;
+  createdAt? :Date;
+  updatedAt? : Date;
+  st: string
+  // students: Student[];
 }
 export enum Subjects {
   na = "N/A",
@@ -36,11 +35,11 @@ export enum Subjects {
   chemistry = "Chemistry",
   biology = "Biology",
   history = "History",
-  literature = "Literature"
+  literature = "Literature",
 }
 export enum User_Sex {
   MALE,
-  FEMALE
+  FEMALE,
 }
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
@@ -59,15 +58,15 @@ export const api = createApi({
       }),
       invalidatesTags: ["Teachers"],
     }),
-    getStudents: build.query<Student[], void>({
-      query: () => "students",
-      providesTags: ["Students"],
-    }),
-    getParents: build.query<Parent[], void>({
+    // getStudents: build.query<Student[], void>({
+    //   query: () => "students",
+    //   providesTags: ["Students"],
+    // }),
+    getParents: build.query<Parents[], void>({
       query: () => "parents",
       providesTags: ["Parents"],
     }),
-    createParent: build.mutation<Parent, Partial<Parent>>({
+    createParent: build.mutation<Parents, Partial<Parents>>({
       query: (parents) => ({
         url: "parents",
         method: "POST",
@@ -75,13 +74,26 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
+    updateParents: build.mutation<Parents, { ParentId: number; parent:Parents }>(
+      {
+        query: ({ ParentId, parent }) => ({
+          url: `/parents/${ParentId}`,
+          method: "PUT",
+          body: { parent },
+        }),
+        invalidatesTags: (result, error, { ParentId }) => [
+          { type: "Parents", id: ParentId },
+        ],
+      }
+    ),
   }),
 });
 
 export const {
   useGetTeachersQuery,
   useCreateTeacherMutation,
-  useGetStudentsQuery,
+  // useGetStudentsQuery,
   useGetParentsQuery,
-  useCreateParentMutation
+  useCreateParentMutation,
+  useUpdateParentsMutation
 } = api;

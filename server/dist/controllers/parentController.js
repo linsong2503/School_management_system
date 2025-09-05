@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createParents = exports.getParents = void 0;
+exports.updateParents = exports.createParents = exports.getParents = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,3 +42,28 @@ const createParents = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createParents = createParents;
+const updateParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ParentId = parseInt(req.params.id);
+    const { username, name, surname, email, phone, address, updatedAt } = req.body;
+    try {
+        const updatedParent = yield prisma.parent.update({
+            where: {
+                id: ParentId,
+            },
+            data: {
+                username,
+                name,
+                surname,
+                email,
+                phone,
+                address,
+                updatedAt,
+            },
+        });
+        res.status(204).json(updatedParent);
+    }
+    catch (e) {
+        res.status(500).json({ message: `Error updating parent: ${e.message}` });
+    }
+});
+exports.updateParents = updateParents;

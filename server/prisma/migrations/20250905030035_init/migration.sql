@@ -8,6 +8,7 @@ CREATE TYPE "Day" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY
 CREATE TABLE "Admin" (
     "id" TEXT NOT NULL,
     "username" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'A',
 
     CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
 );
@@ -24,11 +25,13 @@ CREATE TABLE "Student" (
     "img" TEXT,
     "bloodType" TEXT NOT NULL,
     "sex" "UserSex" NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "parentId" INTEGER NOT NULL,
     "classId" INTEGER NOT NULL,
     "gradeId" INTEGER NOT NULL,
     "birthday" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'A',
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
 );
@@ -46,7 +49,9 @@ CREATE TABLE "Teacher" (
     "bloodType" TEXT NOT NULL,
     "sex" "UserSex" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "birthday" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'A',
 
     CONSTRAINT "Teacher_pkey" PRIMARY KEY ("id")
 );
@@ -60,7 +65,9 @@ CREATE TABLE "Parent" (
     "email" TEXT,
     "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'A',
 
     CONSTRAINT "Parent_pkey" PRIMARY KEY ("id")
 );

@@ -1,28 +1,25 @@
 import React from "react";
-import { Teacher } from "@prisma/client";
+import { Parent } from "@prisma/client";
 import prisma from "@/lib/prisma";
-const SingleTeacherPage = async ({
+const SingleParentPage = async ({
   params: { id },
 }: {
   params: { id: string };
 }) => {
-  const teacher:
-    | (Teacher & {
-        _count: { subjects: number; lessons: number; classes: number };
-      })
-      | null = await prisma.teacher.findUnique({
-        where: {id},
-        include: {
-          _count: {
-            select:{
-              subjects:true,
-              lessons:true,
-              classes:true
-            }
-          }
-        }
-      })
-      ;
+  // const parents:
+  //   | (Parent & {
+  //       _count: { students: number };
+  //     })
+  //   | null = await prisma.parent.findUnique({
+  //   where: { id },
+  //   include: {
+  //     _count: {
+  //       select: {
+  //         students: true,
+  //       },
+  //     },
+  //   },
+  // });
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 xl:flex-row">
       {/* LEFT */}
@@ -33,4 +30,4 @@ const SingleTeacherPage = async ({
   );
 };
 
-export default SingleTeacherPage;
+export default SingleParentPage;

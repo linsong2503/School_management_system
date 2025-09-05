@@ -24,7 +24,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.10.1",
+    "@prisma/client": "^6.15.0",
     "body-parser": "^2.2.0",
     "concurrently": "^9.2.0",
     "cors": "^2.8.5",

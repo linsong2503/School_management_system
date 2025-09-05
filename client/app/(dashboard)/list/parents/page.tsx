@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
@@ -39,10 +38,6 @@ import NotFound from "@/app/(components)/Error";
 type OwnerState = {
   expanded: boolean;
 };
-// type Props = {
-//   p_id: string;
-//   setIsModalOpen: (isOpen: boolean) => void;
-// };
 const StyledQuickFilter = styled(QuickFilter)({
   display: "grid",
   alignItems: "center",
@@ -203,7 +198,12 @@ function CustomToolbar() {
 const ParentListPage = () => {
   const { data: parentsData, isLoading, isError } = useGetParentsQuery();
   if (isLoading) return <LoadingSpinner color="pink" size="small" />;
-  // if (isError || !parentsData) return <div><NotFound /></div>;
+  if (isError || !parentsData)
+    return (
+      <div>
+        <NotFound />
+      </div>
+    );
   const columns: GridColDef[] = [
     { field: "id", headerName: "Parents ID", width: 80 },
     { field: "username", headerName: "Username", width: 100, editable: true },
@@ -227,18 +227,6 @@ const ParentListPage = () => {
         );
       },
     },
-    // {
-    //   field: "student2",
-    //   headerName: "Students",
-    //   width: 150,
-    //   renderCell: (cellValues: GridRenderCellParams<Student>) => {
-    //     return (
-    //       <div>
-    //         {cellValues.value.map((pr: { name: string }) => pr.name).join(",") || []}
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       field: "actions",
       type: "actions",

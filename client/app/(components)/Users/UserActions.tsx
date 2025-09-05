@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Preview, Edit, Delete } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import EditBox from "../Forms/EditDialog";
 const UserActions = ({ params }: any) => {
+  const router = useRouter();
   return (
     <Box>
       <Tooltip title="View details">
         <IconButton
           onClick={() => {
-            (window as Window).location = `./teachers/${params.id}`;
+            router.push(`${window.location.pathname}/${params.id}`);
           }}
         >
           <Preview />
