@@ -233,7 +233,7 @@ const ParentListPage = () => {
       headerName: "Actions",
       width: 180,
       renderCell: (params) => {
-        return <UserActions {...{ params }} />;
+        return <UserActions {...{params} }/>;
       },
     },
   ];

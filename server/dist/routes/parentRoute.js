@@ -4,6 +4,7 @@ const parentController_1 = require("../controllers/parentController");
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 router.get("/", parentController_1.getParents);
+router.get("/:id", parentController_1.getParentById);
 router.post("/", parentController_1.createParents);
 router.put("/:id", parentController_1.updateParents);
 exports.default = router;

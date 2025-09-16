@@ -9,12 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateParents = exports.createParents = exports.getParents = void 0;
+exports.updateParents = exports.createParents = exports.getParentById = exports.getParents = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const parents = yield prisma.parent.findMany({
+            where: {
+                st: "A",
+            },
             include: {
                 students: true,
             },
@@ -28,6 +31,21 @@ const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getParents = getParents;
+const getParentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Pid = parseInt(req.params.id);
+    try {
+        const parent = yield prisma.parent.findUnique({
+            where: {
+                id: Pid,
+            },
+        });
+        res.status(200).json(parent);
+    }
+    catch (e) {
+        res.status(404).json({ message: `Error retrieving parent: ${e.message}` });
+    }
+});
+exports.getParentById = getParentById;
 const createParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newParent = yield prisma.parent.create({

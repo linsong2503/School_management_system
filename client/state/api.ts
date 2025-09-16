@@ -23,9 +23,9 @@ export interface Parents {
   email: string;
   phone: string;
   address: string;
-  createdAt? :Date;
-  updatedAt? : Date;
-  st: string
+  createdAt?: Date;
+  updatedAt?: Date;
+  st: string;
   // students: Student[];
 }
 export enum Subjects {
@@ -74,18 +74,17 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
-    updateParents: build.mutation<Parents, { ParentId: number; parent:Parents }>(
-      {
-        query: ({ ParentId, parent }) => ({
-          url: `/parents/${ParentId}`,
-          method: "PUT",
-          body: { parent },
-        }),
-        invalidatesTags: (result, error, { ParentId }) => [
-          { type: "Parents", id: ParentId },
-        ],
-      }
-    ),
+
+    updateParents: build.mutation<Parents,{ ParentId: number; updatedParent: Parents }>({
+      query: ({ ParentId, updatedParent }) => ({
+        url: `/parents/${ParentId}`,
+        method: "PUT",
+        body: { updatedParent },
+      }),
+      invalidatesTags: (result, error, { ParentId }) => [
+        { type: "Parents", id: ParentId },
+      ],
+    }),
   }),
 });
 
@@ -95,5 +94,5 @@ export const {
   // useGetStudentsQuery,
   useGetParentsQuery,
   useCreateParentMutation,
-  useUpdateParentsMutation
+  useUpdateParentsMutation,
 } = api;
