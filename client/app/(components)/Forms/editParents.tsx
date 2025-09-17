@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useUpdateParentsMutation } from "@/state/api";
 import Modal from "./modal";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -18,6 +17,12 @@ const EditBox = ({ isOpen, onClose, id }: Props) => {
       fetchData();
     }
   }, [id]);
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const fetchData = async () => {
     const response = await axios.get(`${baseURL}` + `parents/${id}`);
     setUsername(response.data.username);
@@ -27,27 +32,10 @@ const EditBox = ({ isOpen, onClose, id }: Props) => {
     setPhone(response.data.phone);
     setAddress(response.data.address);
   };
-  const [updateParent] = useUpdateParentsMutation();
-  const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
   const handleSubmit = async () => {
-    await updateParent({
-      ParentId: parseInt(id),
-      updatedParent: {
-        username: username,
-        name: name,
-        surname: surname,
-        email: email,
-        phone: phone,
-        address: address,
-        st: "A",
-        updatedAt: new Date(Date.now()),
-      },
-    });
+     await axios.put(`${baseURL}` + `parents/${id}`,{username,name,surname,email,phone,address});
+     fetchData();
+     window.location.reload();
   };
   const inputStyles = "w-full rounded border border-gray-300 p-2 shadow-sm "; // customize input field
 
@@ -58,6 +46,7 @@ const EditBox = ({ isOpen, onClose, id }: Props) => {
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
+          
         }}
       >
         <input

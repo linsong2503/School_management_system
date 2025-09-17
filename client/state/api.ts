@@ -74,17 +74,6 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
-
-    updateParents: build.mutation<Parents,{ ParentId: number; updatedParent: Parents }>({
-      query: ({ ParentId, updatedParent }) => ({
-        url: `/parents/${ParentId}`,
-        method: "PUT",
-        body: { updatedParent },
-      }),
-      invalidatesTags: (result, error, { ParentId }) => [
-        { type: "Parents", id: ParentId },
-      ],
-    }),
   }),
 });
 
@@ -94,5 +83,4 @@ export const {
   // useGetStudentsQuery,
   useGetParentsQuery,
   useCreateParentMutation,
-  useUpdateParentsMutation,
 } = api;

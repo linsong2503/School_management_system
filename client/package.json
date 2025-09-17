@@ -25,6 +25,7 @@
     "dotenv": "^16.5.0",
     "lucide-react": "^0.509.0",
     "next": "^15.3.5",
+    "nextjs-toploader": "^3.9.17",
     "numeral": "^2.0.6",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
