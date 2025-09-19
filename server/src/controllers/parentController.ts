@@ -24,6 +24,24 @@ export const getParents = async (
   }
 };
 
+export const getParentById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const Pid = parseInt(req.params.id);
+  try {
+    const parent = await prisma.parent.findUnique({
+      where: {
+        id: Pid,
+      },
+    });
+    res.status(200).json(parent);
+  } catch (e: any) {
+    res.status(404).json({ message: `Error retrieving parent: ${e.message}` });
+  }
+};
+
+
 export const createParents = async (
   req: Request,
   res: Response

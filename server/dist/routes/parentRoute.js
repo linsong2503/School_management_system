@@ -7,4 +7,5 @@ router.get("/", parentController_1.getParents);
 router.get("/:id", parentController_1.getParentById);
 router.post("/", parentController_1.createParents);
 router.put("/:id", parentController_1.updateParents);
+router.patch("/:id", parentController_1.updateParentsStatus);
 exports.default = router;
