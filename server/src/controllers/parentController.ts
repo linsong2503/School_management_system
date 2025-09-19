@@ -24,23 +24,6 @@ export const getParents = async (
   }
 };
 
-export const getParentById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const Pid = parseInt(req.params.id);
-  try {
-    const parent = await prisma.parent.findUnique({
-      where: {
-        id: Pid,
-      },
-    });
-    res.status(200).json(parent);
-  } catch (e: any) {
-    res.status(404).json({ message: `Error retrieving parent: ${e.message}` });
-  }
-};
-
 export const createParents = async (
   req: Request,
   res: Response
@@ -77,6 +60,28 @@ export const updateParents = async (
         phone,
         address,
         updatedAt,
+      },
+    });
+    res.status(204).json(updatedParent);
+  } catch (e: any) {
+    res.status(500).json({ message: `Error updating parent: ${e.message}` });
+  }
+};
+
+export const updateParentsStatus = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const ParentId = parseInt(req.params.id);
+  const { status} =
+    req.body;
+  try {
+    const updatedParent = await prisma.parent.update({
+      where: {
+        id: ParentId,
+      },
+      data: {
+       st:status
       },
     });
     res.status(204).json(updatedParent);
