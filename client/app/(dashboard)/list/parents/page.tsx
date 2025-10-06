@@ -31,10 +31,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useGetParentsQuery } from "@/state/api";
 import { dataGridClassNames } from "@/lib/utils";
 import { Student } from "@prisma/client";
-import UserActions from "@/app/(components)/Users/UserActions";
 import LoadingSpinner from "@/app/(components)/Loading";
 import TableHeader from "../../../(components)/TableHeader";
 import NotFound from "@/app/(components)/Error";
+import ParentActions from "@/app/(components)/Users/ParentActions";
 type OwnerState = {
   expanded: boolean;
 };
@@ -233,7 +233,7 @@ const ParentListPage = () => {
       headerName: "Actions",
       width: 180,
       renderCell: (params) => {
-        return <UserActions {...{params} }/>;
+        return <ParentActions {...{params} }/>;
       },
     },
   ];

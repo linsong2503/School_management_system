@@ -34,10 +34,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useGetTeachersQuery } from "@/state/api";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 import { Class, Lesson, Subject } from "@prisma/client";
-import UserActions from "@/app/(components)/Users/UserActions";
+import UserActions from "@/app/(components)/Users/ParentActions";
 import LoadingSpinner from "@/app/(components)/Loading";
 import Header from "@/app/(components)/Header";
 import NotFound from "@/app/(components)/Error";
+import TableHeader from "@/app/(components)/TableHeader";
 type OwnerState = {
   expanded: boolean;
 };
@@ -205,7 +206,12 @@ function CustomToolbar() {
 const Teachers = ({ id, setIsModalOpen }: Props) => {
   const { data: teacherData, isLoading, isError } = useGetTeachersQuery();
   if (isLoading) return <LoadingSpinner color="pink" size="small" />;
-  if (isError || !teacherData) return <div><NotFound /></div>;
+  if (isError || !teacherData)
+    return (
+      <div>
+        <NotFound />
+      </div>
+    );
   const columns: GridColDef[] = [
     { field: "id", headerName: "Teacher ID", width: 80 },
     { field: "username", headerName: "Username", width: 100, editable: true },
@@ -260,18 +266,7 @@ const Teachers = ({ id, setIsModalOpen }: Props) => {
   return (
     <>
       <div className="pt-3">
-        <Header
-          name="Teachers"
-          buttonComponent={
-            <button
-              className="flex items-center rounded bg-blue-300 px-3 py-2 text-black font-bold hover:bg-blue-600 hover:text-white cursor-pointer"
-              onClick={() => setIsModalOpen(true)}
-            >
-              New Teacher
-            </button>
-          }
-          // isSmallText
-        />
+         <TableHeader index={1} />
       </div>
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid

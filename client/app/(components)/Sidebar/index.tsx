@@ -101,7 +101,7 @@ const SidebarItems = [
       {
         icon: <Calendar />,
         label: "Events",
-        href: "/list/events",
+        href: "/events",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {

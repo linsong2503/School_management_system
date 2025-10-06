@@ -4,5 +4,7 @@ const express_1 = require("express");
 const teacherController_1 = require("../controllers/teacherController");
 const router = (0, express_1.Router)();
 router.get("/", teacherController_1.getTeachers);
+router.get("/:id", teacherController_1.getTeacherById);
 router.post("/", teacherController_1.createTeacher);
+router.put("/:id", teacherController_1.updateTeacher);
 exports.default = router;

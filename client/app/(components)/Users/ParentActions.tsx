@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import EditBox from "../Forms/editParents";
 import DeleteDialog from "../Delete/deleteRecord";
-const UserActions = ({ params }: any) => {
+const ParentActions = ({ params }: any) => {
   const router = useRouter();
-  const [isModelOpen, setIsModalOpen] = useState(false);
+  const [isParentModelOpen, setIsParentModalOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <Box>
       <EditBox
         id={params.id}
-        isOpen={isModelOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isParentModelOpen}
+        onClose={() => setIsParentModalOpen(false)}
       />
       <DeleteDialog
         opt={3}
@@ -22,6 +22,7 @@ const UserActions = ({ params }: any) => {
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
       />
+
       <Tooltip title="View details">
         <IconButton
           onClick={() => {
@@ -32,7 +33,7 @@ const UserActions = ({ params }: any) => {
         </IconButton>
       </Tooltip>
       <Tooltip title="Edit" className="px-4 xl:px-6">
-        <IconButton onClick={() => setIsModalOpen(true)}>
+        <IconButton onClick={() => setIsParentModalOpen(true)}>
           <Edit />
         </IconButton>
       </Tooltip>
@@ -45,4 +46,4 @@ const UserActions = ({ params }: any) => {
   );
 };
 
-export default UserActions;
+export default ParentActions;

@@ -1,48 +1,53 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import Modal from "./modal";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useGetParentByIdQuery } from "@/state/api";
+import { useUpdateParentMutation } from "@/state/api";
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   id: string;
 };
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const EditBox = ({ isOpen, onClose, id }: Props) => {
-  useEffect(() => {
-    if (id) {
-      fetchData();
-    }
-  }, [id]);
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [updatedAt] = useState( new Date(Date.now()));
-  const fetchData = async () => {
-    const response = await axios.get(`${baseURL}` + `parents/${id}`);
-    setUsername(response.data.username);
-    setName(response.data.name);
-    setSurname(response.data.surname);
-    setEmail(response.data.email);
-    setPhone(response.data.phone);
-    setAddress(response.data.address);
-  };
+  const [updatedAt] = useState(new Date(Date.now()));
+  const { data } = useGetParentByIdQuery(id || "");
+  const [updateParent, { error, isSuccess }] = useUpdateParentMutation();
+  useEffect(() => {
+    if (data) {
+      // If errors occur , remove properties such as username: SetStateAction<string>; 
+      // and so on in api.ts file
+      setUsername(data.username);
+      setName(data.name);
+      setSurname(data.surname);
+      setEmail(data.email);
+      setPhone(data.phone);
+      setAddress(data.address);
+    }
+    if (error) alert(error);
+
+    if (isSuccess) {
+      window.location.reload();
+    }
+  }, [error, isSuccess, data]);
+
   const handleSubmit = async () => {
-    await axios.put(`${baseURL}` + `parents/${id}`, {
-      username,
-      name,
-      surname,
-      email,
-      phone,
-      address,
-      updatedAt
+    await updateParent({
+      parentId: id,
+      username: username,
+      name: name,
+      surname: surname,
+      email: email,
+      phone: phone,
+      address: address,
+      updatedAt: updatedAt,
     });
-    fetchData();
-    window.location.reload();
   };
   const inputStyles = "w-full rounded border border-gray-300 p-2 shadow-sm "; // customize input field
 

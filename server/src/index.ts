@@ -20,6 +20,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 import teacherRoute from "./routes/teacherRoute";
 import parentRoute from "./routes/parentRoute";
 import studentRoute from "./routes/studentRoute";
+import eventRoute from "./routes/eventRoute";
+
 // Routes
 app.get("/", (req, res) => {
   res.send("This is home route");
@@ -27,6 +29,7 @@ app.get("/", (req, res) => {
 app.use("/teachers", teacherRoute);
 app.use("/students", studentRoute);
 app.use("/parents", parentRoute);
+app.use("/events", eventRoute);
 
 /* Server */
 const port = process.env.PORT || 3000;

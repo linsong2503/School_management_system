@@ -9,12 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTeacher = exports.getTeachers = void 0;
+exports.updateTeacher = exports.createTeacher = exports.getTeacherById = exports.getTeachers = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getTeachers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const teachers = yield prisma.teacher.findMany({
+            where: {
+                st: "A",
+            },
             include: {
                 subjects: true,
                 lessons: true,
@@ -24,16 +27,32 @@ const getTeachers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json(teachers);
     }
     catch (error) {
-        res.status(500).json({ message: `Error retrieving teachers: ${error.message}` });
+        res
+            .status(500)
+            .json({ message: `Error retrieving teachers: ${error.message}` });
     }
 });
 exports.getTeachers = getTeachers;
+const getTeacherById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ID = parseInt(req.params.id);
+    try {
+        const teacher = yield prisma.teacher.findUnique({
+            where: {
+                id: ID,
+            },
+        });
+        res.status(200).json(teacher);
+    }
+    catch (e) {
+        res.status(404).json({ message: `Error retrieving teacher: ${e.message}` });
+    }
+});
+exports.getTeacherById = getTeacherById;
 const createTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, username, name, surname, email, phone, address, img, bloodType, sex, subjects, birthday, } = req.body;
+    const { username, name, surname, email, phone, address, img, bloodType, sex, createdAt, updatedAt, subjectNames, classes, birthday, st, } = req.body;
     try {
         const newTeacher = yield prisma.teacher.create({
             data: {
-                id,
                 username,
                 name,
                 surname,
@@ -43,14 +62,55 @@ const createTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 img,
                 bloodType,
                 sex,
-                subjects,
+                createdAt,
+                updatedAt,
+                st,
                 birthday,
+                subjects: {
+                    create: [
+                        { name: subjectNames }
+                    ]
+                }
             },
         });
         res.status(201).json(newTeacher);
     }
     catch (error) {
-        res.status(500).json({ message: `Error creating teacher: ${error.message}` });
+        res
+            .status(500)
+            .json({ message: `Error creating teacher: ${error.message}` });
     }
 });
 exports.createTeacher = createTeacher;
+const updateTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ID = parseInt(req.params.id);
+    const { username, name, surname, email, phone, address, img, bloodType, sex, updatedAt, birthday, st, } = req.body;
+    try {
+        const updatedTeacher = yield prisma.teacher.update({
+            where: {
+                id: ID,
+            },
+            data: {
+                username,
+                name,
+                surname,
+                email,
+                phone,
+                address,
+                img,
+                bloodType,
+                sex,
+                updatedAt,
+                birthday,
+                st,
+            },
+        });
+        res.json(exports.updateTeacher);
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: `Error updating teacher: ${error.message}` });
+    }
+});
+exports.updateTeacher = updateTeacher;

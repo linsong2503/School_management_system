@@ -49,7 +49,7 @@ const DeleteDialog = ({ opt, id , isOpen,onClose}: Props) => {
 
   const [st] = useState("I");
   const handleClick = async () => {
-    await axios.patch(`${baseURL}` + `parents/${id}`, {
+    await axios.put(`${baseURL}` + `parents/${id}`, {
       st
     });
     window.location.reload();

@@ -63,7 +63,7 @@ export const updateParents = async (
   res: Response
 ): Promise<void> => {
   const ParentId = parseInt(req.params.id);
-  const { username, name, surname, email, phone, address, updatedAt } =
+  const { username, name, surname, email, phone, address, updatedAt,st } =
     req.body;
   try {
     const updatedParent = await prisma.parent.update({
@@ -78,32 +78,12 @@ export const updateParents = async (
         phone,
         address,
         updatedAt,
+        st
       },
     });
-    res.status(204).json(updatedParent);
+    res.status(200).json(updatedParent);
   } catch (e: any) {
     res.status(500).json({ message: `Error updating parent: ${e.message}` });
   }
 };
 
-export const updateParentsStatus = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const ParentId = parseInt(req.params.id);
-  const { status} =
-    req.body;
-  try {
-    const updatedParent = await prisma.parent.update({
-      where: {
-        id: ParentId,
-      },
-      data: {
-       st:status
-      },
-    });
-    res.status(204).json(updatedParent);
-  } catch (e: any) {
-    res.status(500).json({ message: `Error updating parent: ${e.message}` });
-  }
-};
