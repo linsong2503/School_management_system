@@ -6,7 +6,6 @@ import React, {
   Ref,
   Fragment,
 } from "react";
-import axios from "axios";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,8 +14,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import { useUpdateParentMutation } from "@/state/api";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: ReactElement<any, any>;
@@ -31,7 +30,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
-const DeleteDialog = ({ opt, id , isOpen,onClose}: Props) => {
+const DeleteDialog = ({ opt, id, isOpen, onClose }: Props) => {
   let obj;
   switch (opt) {
     case 1:
@@ -46,13 +45,17 @@ const DeleteDialog = ({ opt, id , isOpen,onClose}: Props) => {
     default:
       break;
   }
-
+  const [deleteParent, { error, isSuccess }] = useUpdateParentMutation();
   const [st] = useState("I");
   const handleClick = async () => {
-    await axios.put(`${baseURL}` + `parents/${id}`, {
-      st
+    await deleteParent({
+      parentId: id,
+      st: st,
     });
-    window.location.reload();
+    if (error) console.log(error);
+    if (isSuccess) {
+      window.location.reload();
+    }
   };
   return (
     <Fragment>
