@@ -23,6 +23,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 const teacherRoute_1 = __importDefault(require("./routes/teacherRoute"));
 const parentRoute_1 = __importDefault(require("./routes/parentRoute"));
 const studentRoute_1 = __importDefault(require("./routes/studentRoute"));
+const classRoute_1 = __importDefault(require("./routes/classRoute"));
 const eventRoute_1 = __importDefault(require("./routes/eventRoute"));
 const subjectRoute_1 = __importDefault(require("./routes/subjectRoute"));
 // Routes
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 });
 app.use("/teachers", teacherRoute_1.default);
 app.use("/students", studentRoute_1.default);
+app.use("/classes", classRoute_1.default);
 app.use("/parents", parentRoute_1.default);
 app.use("/events", eventRoute_1.default);
 app.use("/subjects", subjectRoute_1.default);

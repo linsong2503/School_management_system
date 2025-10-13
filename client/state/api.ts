@@ -40,22 +40,10 @@ export interface Parents {
   // students: Student[];
 }
 
-export enum Classes {
-  a_1 = "1A",
-  b_1 = "1B",
-  c_1 = "1C",
-  a_2 = "2A",
-  b_2 = "2B",
-  c_2 = "2C",
-  a_3 = "3A",
-  b_3 = "3B",
-  c_3 = "3C",
-  a_4 = "4A",
-  b_4 = "4B",
-  c_4 = "4C",
-  a_5 = "5A",
-  b_5 = "5B",
-  c_5 = "5C",
+export interface Classes {
+  id: number;
+  name: string;
+  capacity: number;
 }
 
 export interface Event {
@@ -85,7 +73,14 @@ export enum Blood_Types {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
   reducerPath: "api",
-  tagTypes: ["Teachers", "Students", "Subjects", "Parents", "Events"],
+  tagTypes: [
+    "Teachers",
+    "Students",
+    "Classes",
+    "Subjects",
+    "Parents",
+    "Events",
+  ],
   endpoints: (build) => ({
     getTeachers: build.query<Teacher[], void>({
       query: () => "teachers",
@@ -104,6 +99,10 @@ export const api = createApi({
     //   providesTags: ["Students"],
     // }),
 
+    getClasses: build.query<Classes[], void>({
+      query: () => "classes",
+      providesTags: ["Classes"],
+    }),
     getSubjects: build.query<Subjects[], void>({
       query: () => "subjects",
       providesTags: ["Subjects"],
@@ -157,6 +156,7 @@ export const {
   useGetTeachersQuery,
   useCreateTeacherMutation,
   // useGetStudentsQuery,
+  useGetClassesQuery,
   useGetSubjectsQuery,
   useGetParentsQuery,
   useGetParentByIdQuery,

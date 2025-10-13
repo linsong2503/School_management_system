@@ -4,6 +4,7 @@ import {
   useGetSubjectsQuery,
   User_Sex,
   Blood_Types,
+  useGetClassesQuery,
 } from "@/state/api";
 import React, { useState, useEffect, useRef } from "react";
 import { formatISO } from "date-fns";
@@ -121,6 +122,111 @@ const SubjectDropBox = () => {
     </div>
   );
 };
+const ClassDropBox = () => {
+  const { data } = useGetClassesQuery();
+  const [formData, setFormData] = useState({ ClassList: [] });
+  const [searchText, setSearchText] = useState("");
+  const [filterOptions, setFilterOptions] = useState<any>([]);
+  const [selectedOptions, setSelectedOptions] = useState<any>([]);
+  const [active, setActive] = useState(false);
+  const selectRef = useRef(null);
+
+  const handleChange = (data: any) => {
+    setFormData({ ...formData, ClassList: data });
+  };
+
+  const setOptions = (value: any) => {
+    if (selectedOptions.includes(value)) {
+      const opts = selectedOptions.filter((item: any) => item != value);
+      setSelectedOptions([...opts]);
+      handleChange([...opts]);
+    } else {
+      setSelectedOptions([...selectedOptions, value]);
+      handleChange([...selectedOptions, value]);
+    }
+  };
+
+  useEffect(() => {
+    const match = data?.filter((item) =>
+      item?.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    if (match) {
+      setFilterOptions(match);
+    } else {
+      setFilterOptions(data);
+    }
+  }, [data, searchText]);
+
+  useEffect(() => {
+    const closeHandler = (event: any) => {
+      if (
+        selectRef.current &&
+        !event.composedPath().includes(selectRef.current)
+      ) {
+        setActive(false);
+      }
+    };
+    document.addEventListener("click", closeHandler);
+    return () => {
+      document.removeEventListener("click", closeHandler);
+    };
+  }, []);
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="border border-gray-200 rounded-md" ref={selectRef}>
+        <div className="px-2">
+          {selectedOptions && selectedOptions.length > 0 && (
+            <div className="flex items-center gap-2 text-xs flex-wrap">
+              {selectedOptions.map((opt: any) => {
+                return (
+                  <span
+                    key={opt}
+                    className="flex flex-wrap items-center gap-1 bg-blue-200 mt-1 p-1 rounded-md"
+                  >
+                    <span className="font-bold"> {opt}</span>
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => setOptions(opt)}
+                    >
+                      <IoMdClose />
+                    </span>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+          <input
+            type="text"
+            placeholder="Search Classes..."
+            className="py-2 w-full outline-none"
+            onKeyUp={(e) => setSearchText((e.target as HTMLInputElement).value)}
+            onClick={() => setActive(true)}
+          />
+        </div>
+        {active && (
+          <div className="flex flex-col border-t-2 border-gray-400 max-h[200px] overflow-y-auto py-3 px-2">
+            {filterOptions.map((option: any) => {
+              return (
+                <div
+                  className="flex items-center gap-1"
+                  key={option.name}
+                  onClick={() => setOptions(option.name)}
+                >
+                  <input
+                    readOnly
+                    type="checkbox"
+                    checked={selectedOptions.includes(option.name)}
+                  />
+                  {option.name}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [createTeacher, { isLoading }] = useCreateTeacherMutation();
@@ -178,7 +284,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
     );
   };
   const selectStyles =
-    "mb-4 block w-full rounded border border-gray-300 px-3 py-2 ";
+    "mb-2 block w-full rounded border border-gray-300 px-3 py-2 ";
 
   const inputStyles = "w-full rounded border border-gray-300 p-2 shadow-sm ";
 
@@ -287,15 +393,19 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
           </div>
 
           {/* Classes */}
-          <div></div>
+          <div className={selectStyles}>
+            <input
+              type="text"
+              className={inputStyles}
+              placeholder="Lessons"
+              value={lessons}
+              onChange={(e) => setLesson(e.target.value)}
+            />
+          </div>
         </div>
-        <input
-          type="text"
-          className={inputStyles}
-          placeholder="Lessons"
-          value={lessons}
-          onChange={(e) => setLesson(e.target.value)}
-        />
+        <div className={selectStyles}>
+            <ClassDropBox/>
+        </div>
         <button
           type="submit"
           className={`focus-offset-2 mt-4 flex w-full justify-center rounded-md  border border-transparent bg-black px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 ${

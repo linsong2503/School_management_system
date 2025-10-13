@@ -20,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 import teacherRoute from "./routes/teacherRoute";
 import parentRoute from "./routes/parentRoute";
 import studentRoute from "./routes/studentRoute";
+import classRoute from "./routes/classRoute"
 import eventRoute from "./routes/eventRoute";
 import subjectRoute from "./routes/subjectRoute"
 
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 });
 app.use("/teachers", teacherRoute);
 app.use("/students", studentRoute);
+app.use("/classes",classRoute)
 app.use("/parents", parentRoute);
 app.use("/events", eventRoute);
 app.use("/subjects",subjectRoute)
