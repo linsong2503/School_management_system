@@ -1,24 +1,128 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useCreateTeacherMutation,
-  Subjects,
+  useGetSubjectsQuery,
   User_Sex,
   Blood_Types,
-  Classes,
 } from "@/state/api";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { formatISO } from "date-fns";
 import Modal from "./modal";
 import LoadingSpinner from "../Loading";
+import { IoMdClose } from "react-icons/io";
 // import MuitiSelectDropdown from "../DropdownBox";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
-  
+const SubjectDropBox = () => {
+  const { data } = useGetSubjectsQuery();
+  const [formData, setFormData] = useState({ SujectList: [] });
+  const [searchText, setSearchText] = useState("");
+  const [filterOptions, setFilterOptions] = useState<any>([]);
+  const [selectedOptions, setSelectedOptions] = useState<any>([]);
+  const [active, setActive] = useState(false);
+  const selectRef = useRef(null);
 
+  const handleChange = (data: any) => {
+    setFormData({ ...formData, SujectList: data });
+  };
+
+  const setOptions = (value: any) => {
+    if (selectedOptions.includes(value)) {
+      const opts = selectedOptions.filter((item: any) => item != value);
+      setSelectedOptions([...opts]);
+      handleChange([...opts]);
+    } else {
+      setSelectedOptions([...selectedOptions, value]);
+      handleChange([...selectedOptions, value]);
+    }
+  };
+
+  useEffect(() => {
+    const match = data?.filter((item) =>
+      item?.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    if (match) {
+      setFilterOptions(match);
+    } else {
+      setFilterOptions(data);
+    }
+  }, [data, searchText]);
+
+  useEffect(() => {
+    const closeHandler = (event: any) => {
+      if (
+        selectRef.current &&
+        !event.composedPath().includes(selectRef.current)
+      ) {
+        setActive(false);
+      }
+    };
+    document.addEventListener("click", closeHandler);
+    return () => {
+      document.removeEventListener("click", closeHandler);
+    };
+  }, []);
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="border border-gray-200 rounded-md" ref={selectRef}>
+        <div className="px-2">
+          {selectedOptions && selectedOptions.length > 0 && (
+            <div className="flex items-center gap-2 text-xs flex-wrap">
+              {selectedOptions.map((opt: any) => {
+                return (
+                  <span
+                    key={opt}
+                    className="flex flex-wrap items-center gap-1 bg-blue-200 mt-1 p-1 rounded-md"
+                  >
+                    <span className="font-bold"> {opt}</span>
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => setOptions(opt)}
+                    >
+                      <IoMdClose />
+                    </span>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+          <input
+            type="text"
+            placeholder="Search Subjects..."
+            className="py-2 w-full outline-none"
+            onKeyUp={(e) => setSearchText((e.target as HTMLInputElement).value)}
+            onClick={() => setActive(true)}
+          />
+        </div>
+        {active && (
+          <div className="flex flex-col border-t-2 border-gray-400 max-h[200px] overflow-y-auto py-3 px-2">
+            {filterOptions.map((option: any) => {
+              return (
+                <div
+                  className="flex items-center gap-1"
+                  key={option.name}
+                  onClick={() => setOptions(option.name)}
+                >
+                  <input
+                    readOnly
+                    type="checkbox"
+                    checked={selectedOptions.includes(option.name)}
+                  />
+                  {option.name}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [createTeacher, { isLoading }] = useCreateTeacherMutation();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
@@ -33,28 +137,15 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [lessons, setLesson] = useState("");
   const [classes, setClass] = useState("");
   const [birthday, setBirthday] = useState("");
-  // const [formData, setFormData] = useState({ subjs: [] });
 
-  // const handleChange = (data: any) => {
-  //   setFormData({ ...formData, subjs: data });
-  // };
-
-  // const SubjectOptions = [
-  //   { value: Subjects.maths, label: "Maths" },
-  //   { value: Subjects.physics, label: "Physics" },
-  //   { value: Subjects.chemistry, label: "Chemistry" },
-  //   { value: Subjects.biology, label: "Biology" },
-  //   { value: Subjects.history, label: "History" },
-  //   { value: Subjects.literature, label: "Literature" },
-  // ];
+  
 
   const handleSubmit = async () => {
+    // Convert date input into ISO format
     const formattedBirthDay = formatISO(new Date(birthday), {
       representation: "complete",
     });
 
-    // setSubjects({ ...formData });
-    
     await createTeacher({
       username,
       name,
@@ -96,7 +187,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} name="Create new teacher">
       <form
-        className="mt-4 space-y-4"
+        className="mt-3 space-y-2"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
@@ -189,50 +280,16 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
           value={birthday}
           onChange={(e) => setBirthday(e.target.value)}
         />
+
+        {/* Subjects and Classes Selection  */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
-          {/* <select
-            className={selectStyles}
-            value={subjects}
-            onChange={(e) =>
-              setSubjects(Subjects[e.target.value as keyof typeof Subjects])
-            }
-          >
-            <option value="">Select Subject</option>
-            <option value={Subjects.maths}>Maths</option>
-            <option value={Subjects.physics}>Physics</option>
-            <option value={Subjects.chemistry}>Chemistry</option>
-            <option value={Subjects.history}>History</option>
-            <option value={Subjects.biology}>Biology</option>
-            <option value={Subjects.literature}>Literature</option>
-          </select> */}
-          {/* <MuitiSelectDropdown
-            options={SubjectOptions}
-            onChange={handleChange}
-          /> */}
-          <select
-            className={selectStyles}
-            value={classes}
-            onChange={(e) =>
-              setClass(Classes[e.target.value as keyof typeof Classes])
-            }
-          >
-            <option value="">Select Classes</option>
-            <option value={Classes.a_1}>1A</option>
-            <option value={Classes.b_1}>1B</option>
-            <option value={Classes.c_1}>1C</option>
-            <option value={Classes.a_2}>2A</option>
-            <option value={Classes.b_2}>2B</option>
-            <option value={Classes.c_2}>2C</option>
-            <option value={Classes.a_3}>3A</option>
-            <option value={Classes.b_3}>3B</option>
-            <option value={Classes.c_3}>3C</option>
-            <option value={Classes.a_4}>4A</option>
-            <option value={Classes.b_4}>4B</option>
-            <option value={Classes.c_4}>4C</option>
-            <option value={Classes.a_5}>5A</option>
-            <option value={Classes.b_5}>5B</option>
-            <option value={Classes.c_5}>5C</option>
-          </select>
+          {/* Subjects */}
+          <div className={selectStyles}>
+            <SubjectDropBox />
+          </div>
+
+          {/* Classes */}
+          <div></div>
         </div>
         <input
           type="text"

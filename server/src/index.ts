@@ -21,6 +21,7 @@ import teacherRoute from "./routes/teacherRoute";
 import parentRoute from "./routes/parentRoute";
 import studentRoute from "./routes/studentRoute";
 import eventRoute from "./routes/eventRoute";
+import subjectRoute from "./routes/subjectRoute"
 
 // Routes
 app.get("/", (req, res) => {
@@ -30,7 +31,7 @@ app.use("/teachers", teacherRoute);
 app.use("/students", studentRoute);
 app.use("/parents", parentRoute);
 app.use("/events", eventRoute);
-
+app.use("/subjects",subjectRoute)
 /* Server */
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

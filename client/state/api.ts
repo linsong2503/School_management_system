@@ -19,6 +19,13 @@ export interface Teacher {
   lessons: string;
   classes: string;
 }
+
+export interface Subjects {
+  id: number;
+  name: string;
+  teachers: Teacher[];
+}
+
 export interface Parents {
   id: number;
   username: string;
@@ -32,15 +39,7 @@ export interface Parents {
   st: string;
   // students: Student[];
 }
-export enum Subjects {
-  na = "N/A",
-  maths = "Mathemactics",
-  physics = "Physics",
-  chemistry = "Chemistry",
-  biology = "Biology",
-  history = "History",
-  literature = "Literature",
-}
+
 export enum Classes {
   a_1 = "1A",
   b_1 = "1B",
@@ -59,11 +58,14 @@ export enum Classes {
   c_5 = "5C",
 }
 
-export enum Events {
-  bg = "Blue and Gold Day",
-  pe = "Pie-a-Teacher Event",
-  pd = "Prize Drawings",
-  sw = "Spirit weeks",
+export interface Event {
+  id: number;
+  title: string;
+  description: string;
+  startTime: Date;
+  endTime: Date;
+  // classId?:number
+  // class   Class? @relation(fields: [classId], references: [id])
 }
 
 export enum User_Sex {
@@ -83,7 +85,7 @@ export enum Blood_Types {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
   reducerPath: "api",
-  tagTypes: ["Teachers", "Students", "Parents"],
+  tagTypes: ["Teachers", "Students", "Subjects", "Parents", "Events"],
   endpoints: (build) => ({
     getTeachers: build.query<Teacher[], void>({
       query: () => "teachers",
@@ -101,18 +103,28 @@ export const api = createApi({
     //   query: () => "students",
     //   providesTags: ["Students"],
     // }),
+
+    getSubjects: build.query<Subjects[], void>({
+      query: () => "subjects",
+      providesTags: ["Subjects"],
+    }),
+
     getParents: build.query<Parents[], void>({
       query: () => "parents",
       providesTags: ["Parents"],
     }),
-    getParentById: build.query<{
-      address: SetStateAction<string>;
-      phone: SetStateAction<string>;
-      email: SetStateAction<string>;
-      surname: SetStateAction<string>;
-      name: SetStateAction<string>;
-      username: SetStateAction<string>; parent: Parents 
-}, string>({
+    getParentById: build.query<
+      {
+        address: SetStateAction<string>;
+        phone: SetStateAction<string>;
+        email: SetStateAction<string>;
+        surname: SetStateAction<string>;
+        name: SetStateAction<string>;
+        username: SetStateAction<string>;
+        parent: Parents;
+      },
+      string
+    >({
       query: (id) => `parents/${id}`,
     }),
     createParent: build.mutation<Parents, Partial<Parents>>({
@@ -123,13 +135,20 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
-    updateParent: build.mutation<Parents, { parentId: string } & Partial<Parents>>({
-      query: ({parentId,...parent}) => ({
+    updateParent: build.mutation<
+      Parents,
+      { parentId: string } & Partial<Parents>
+    >({
+      query: ({ parentId, ...parent }) => ({
         url: `parents/${parentId}`,
         method: "PUT",
         body: parent,
       }),
       invalidatesTags: ["Parents"],
+    }),
+    getEvents: build.query<Event[], void>({
+      query: () => "events",
+      providesTags: ["Events"],
     }),
   }),
 });
@@ -138,8 +157,10 @@ export const {
   useGetTeachersQuery,
   useCreateTeacherMutation,
   // useGetStudentsQuery,
+  useGetSubjectsQuery,
   useGetParentsQuery,
   useGetParentByIdQuery,
   useUpdateParentMutation,
   useCreateParentMutation,
+  useGetEventsQuery,
 } = api;

@@ -1,12 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
+import { Event } from "@/state/api";
 
-const MuitiSelectDropdown = ({ options,onChange }) => {
+interface Option {
+  title: string;
+}
+interface MultiSelectDropdownProps {
+  options: Event[]|undefined;
+  title?: string[];
+  onChange: (selected: string[]) => void;
+}
+const MuitiSelectDropdown = ({ options,onChange }:MultiSelectDropdownProps) => {
   const [searchText, setSearchText] = useState("");
-  const [filterOptions, setFilterOptions] = useState([]);
+  const [filterOptions, setFilterOptions] = useState<any>([]);
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [active, setActive] = useState(false);
   const selectRef = useRef(null);
@@ -23,8 +31,8 @@ const MuitiSelectDropdown = ({ options,onChange }) => {
   };
 
   useEffect(() => {
-    const match = options.filter((item: { value: string }) =>
-      item?.value.toLowerCase().includes(searchText.toLowerCase())
+    const match = options.filter((item) =>
+      item?.title.toLowerCase().includes(searchText.toLowerCase())
     );
     if (match) {
       setFilterOptions(match);
@@ -81,7 +89,7 @@ const MuitiSelectDropdown = ({ options,onChange }) => {
         <div className="flex flex-col gap-2 border-t-2 py-4 max-h-[300px] overflow-y-auto border-gray-400">
           {filterOptions.map(
             (option: {
-              value: React.Key | null | undefined;
+              title: React.Key | null | undefined;
               label:
                 | string
                 | number
@@ -113,14 +121,14 @@ const MuitiSelectDropdown = ({ options,onChange }) => {
               return (
                 <div
                   className="flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
-                  key={option.value}
-                  onClick={() => setOptions(option.value)}
+                  key={option.title}
+                  onClick={() => setOptions(option.title)}
                 >
                   <input
                     type="checkbox"
-                    checked={selectedOptions.includes(option.value)}
+                    checked={selectedOptions.includes(option.title)}
                   />
-                  {option.label}
+                  {option.title}
                 </div>
               );
             }
