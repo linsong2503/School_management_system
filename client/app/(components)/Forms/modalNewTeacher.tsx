@@ -138,8 +138,6 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [classes, setClass] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  
-
   const handleSubmit = async () => {
     // Convert date input into ISO format
     const formattedBirthDay = formatISO(new Date(birthday), {
