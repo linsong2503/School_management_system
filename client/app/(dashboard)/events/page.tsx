@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect} from "react";
+import React from "react";
 const Eventspage = () => {
   return(
     <div>Event Page</div>
