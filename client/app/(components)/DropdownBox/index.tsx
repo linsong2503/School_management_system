@@ -1,48 +1,59 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
-import { Event } from "@/state/api";
 
-interface Option {
-  title: string;
-}
-interface MultiSelectDropdownProps {
-  options: Event[]|undefined;
-  title?: string[];
-  onChange: (selected: string[]) => void;
-}
-const MuitiSelectDropdown = ({ options,onChange }:MultiSelectDropdownProps) => {
+type Props = {
+  options: any;
+  index: number;
+};
+
+const MuitiSelectDropdown = ({ options, index }: Props) => {
+  const [textObj, setTextObj] = useState("");
+  switch (index) {
+    case 1:
+      setTextObj("Subjects");
+      break;
+    case 2:
+      setTextObj("Classes");
+      break;
+    default:
+      break;
+  }
+  const [formData, setFormData] = useState({ List: [] });
   const [searchText, setSearchText] = useState("");
   const [filterOptions, setFilterOptions] = useState<any>([]);
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [active, setActive] = useState(false);
   const selectRef = useRef(null);
 
+  const handleChange = (data: any) => {
+    setFormData({ ...formData, List: data });
+  };
+
   const setOptions = (value: any) => {
     if (selectedOptions.includes(value)) {
-      const opts = selectedOptions.filter((item: any) => item !== value);
+      const opts = selectedOptions.filter((item: any) => item != value);
       setSelectedOptions([...opts]);
-      onChange([...opts]);
+      handleChange([...opts]);
     } else {
       setSelectedOptions([...selectedOptions, value]);
-      onChange([...selectedOptions, value]);
+      handleChange([...selectedOptions, value]);
     }
   };
 
   useEffect(() => {
-    const match = options.filter((item) =>
-      item?.title.toLowerCase().includes(searchText.toLowerCase())
+    const match = options?.filter((item: any) =>
+      item?.name.toLowerCase().includes(searchText.toLowerCase())
     );
     if (match) {
       setFilterOptions(match);
     } else {
       setFilterOptions(options);
     }
-  }, [searchText]);
+  }, [options, searchText]);
 
   useEffect(() => {
-    const closeHadler = (event: any) => {
+    const closeHandler = (event: any) => {
       if (
         selectRef.current &&
         !event.composedPath().includes(selectRef.current)
@@ -50,91 +61,64 @@ const MuitiSelectDropdown = ({ options,onChange }:MultiSelectDropdownProps) => {
         setActive(false);
       }
     };
-    document.addEventListener("click", closeHadler);
+    document.addEventListener("click", closeHandler);
     return () => {
-      document.removeEventListener("click", closeHadler);
+      document.removeEventListener("click", closeHandler);
     };
-  }, [selectRef.current]);
-
+  }, []);
   return (
-    <div className="border border-gray-200 rounded-md" ref={selectRef}>
-      <div className="px-2">
-        <div className="flex items-center gap-2 text-xs flex-wrap">
-          {selectedOptions.map((opt: any) => {
-            return (
-              <span
-                key={opt}
-                className=" border border-blue-100 px-1 bg-blue-300 rounded-md mt-1 flex items-center gap-1"
-              >
-                {opt}
-                <span
-                  className="cursor-pointer"
-                  onClick={() => setOptions(opt)}
-                >
-                  <IoMdClose />
-                </span>
-              </span>
-            );
-          })}
+    <div className="flex flex-col gap-2">
+      <div className="border border-gray-200 rounded-md" ref={selectRef}>
+        <div className="px-2">
+          {selectedOptions && selectedOptions.length > 0 && (
+            <div className="flex items-center gap-2 text-xs flex-wrap">
+              {selectedOptions.map((opt: any) => {
+                return (
+                  <span
+                    key={opt}
+                    className="flex flex-wrap items-center gap-1 bg-blue-200 mt-1 p-1 rounded-md"
+                  >
+                    <span className="font-bold"> {opt}</span>
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => setOptions(opt)}
+                    >
+                      <IoMdClose />
+                    </span>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+          <input
+            type="text"
+            placeholder={`Search ${textObj}...`}
+            className="py-2 w-full outline-none"
+            onKeyUp={(e) => setSearchText((e.target as HTMLInputElement).value)}
+            onClick={() => setActive(true)}
+          />
         </div>
-        <input
-          type="text"
-          placeholder="Search Events"
-          className="py-2 px-4 w-full outline-none"
-          onKeyUp={(e) => setSearchText(e.target.value)}
-          onClick={() => setActive(true)}
-        />
-      </div>
-      {active && (
-        <div className="flex flex-col gap-2 border-t-2 py-4 max-h-[300px] overflow-y-auto border-gray-400">
-          {filterOptions.map(
-            (option: {
-              title: React.Key | null | undefined;
-              label:
-                | string
-                | number
-                | bigint
-                | boolean
-                | React.ReactElement<
-                    unknown,
-                    string | React.JSXElementConstructor<any>
-                  >
-                | Iterable<React.ReactNode>
-                | React.ReactPortal
-                | Promise<
-                    | string
-                    | number
-                    | bigint
-                    | boolean
-                    | React.ReactPortal
-                    | React.ReactElement<
-                        unknown,
-                        string | React.JSXElementConstructor<any>
-                      >
-                    | Iterable<React.ReactNode>
-                    | null
-                    | undefined
-                  >
-                | null
-                | undefined;
-            }) => {
+        {active && (
+          <div className="flex flex-col border-t-2 border-gray-400 max-h[200px] overflow-y-auto py-3 px-2">
+            {filterOptions.map((option: any) => {
               return (
                 <div
-                  className="flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
-                  key={option.title}
-                  onClick={() => setOptions(option.title)}
+                  className="flex items-center gap-1"
+                  key={option.name}
+                  onClick={() => setOptions(option.name)}
                 >
                   <input
+                    readOnly
                     type="checkbox"
-                    checked={selectedOptions.includes(option.title)}
+                    checked={selectedOptions.includes(option.name)}
                   />
-                  {option.title}
+                  {option.name}
                 </div>
               );
-            }
-          )}
-        </div>
-      )}
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

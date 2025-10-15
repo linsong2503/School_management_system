@@ -6,12 +6,12 @@ import {
   Blood_Types,
   useGetClassesQuery,
 } from "@/state/api";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { formatISO } from "date-fns";
 import Modal from "./modal";
 import LoadingSpinner from "../Loading";
-import { IoMdClose } from "react-icons/io";
-// import MuitiSelectDropdown from "../DropdownBox";
+import MuitiSelectDropdown from "../DropdownBox";
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -19,215 +19,13 @@ type Props = {
 
 const SubjectDropBox = () => {
   const { data } = useGetSubjectsQuery();
-  const [formData, setFormData] = useState({ SujectList: [] });
-  const [searchText, setSearchText] = useState("");
-  const [filterOptions, setFilterOptions] = useState<any>([]);
-  const [selectedOptions, setSelectedOptions] = useState<any>([]);
-  const [active, setActive] = useState(false);
-  const selectRef = useRef(null);
-
-  const handleChange = (data: any) => {
-    setFormData({ ...formData, SujectList: data });
-  };
-
-  const setOptions = (value: any) => {
-    if (selectedOptions.includes(value)) {
-      const opts = selectedOptions.filter((item: any) => item != value);
-      setSelectedOptions([...opts]);
-      handleChange([...opts]);
-    } else {
-      setSelectedOptions([...selectedOptions, value]);
-      handleChange([...selectedOptions, value]);
-    }
-  };
-
-  useEffect(() => {
-    const match = data?.filter((item) =>
-      item?.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    if (match) {
-      setFilterOptions(match);
-    } else {
-      setFilterOptions(data);
-    }
-  }, [data, searchText]);
-
-  useEffect(() => {
-    const closeHandler = (event: any) => {
-      if (
-        selectRef.current &&
-        !event.composedPath().includes(selectRef.current)
-      ) {
-        setActive(false);
-      }
-    };
-    document.addEventListener("click", closeHandler);
-    return () => {
-      document.removeEventListener("click", closeHandler);
-    };
-  }, []);
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="border border-gray-200 rounded-md" ref={selectRef}>
-        <div className="px-2">
-          {selectedOptions && selectedOptions.length > 0 && (
-            <div className="flex items-center gap-2 text-xs flex-wrap">
-              {selectedOptions.map((opt: any) => {
-                return (
-                  <span
-                    key={opt}
-                    className="flex flex-wrap items-center gap-1 bg-blue-200 mt-1 p-1 rounded-md"
-                  >
-                    <span className="font-bold"> {opt}</span>
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => setOptions(opt)}
-                    >
-                      <IoMdClose />
-                    </span>
-                  </span>
-                );
-              })}
-            </div>
-          )}
-          <input
-            type="text"
-            placeholder="Search Subjects..."
-            className="py-2 w-full outline-none"
-            onKeyUp={(e) => setSearchText((e.target as HTMLInputElement).value)}
-            onClick={() => setActive(true)}
-          />
-        </div>
-        {active && (
-          <div className="flex flex-col border-t-2 border-gray-400 max-h[200px] overflow-y-auto py-3 px-2">
-            {filterOptions.map((option: any) => {
-              return (
-                <div
-                  className="flex items-center gap-1"
-                  key={option.name}
-                  onClick={() => setOptions(option.name)}
-                >
-                  <input
-                    readOnly
-                    type="checkbox"
-                    checked={selectedOptions.includes(option.name)}
-                  />
-                  {option.name}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  return <MuitiSelectDropdown options={data} index={1} />;
 };
+
 const ClassDropBox = () => {
   const { data } = useGetClassesQuery();
-  const [formData, setFormData] = useState({ ClassList: [] });
-  const [searchText, setSearchText] = useState("");
-  const [filterOptions, setFilterOptions] = useState<any>([]);
-  const [selectedOptions, setSelectedOptions] = useState<any>([]);
-  const [active, setActive] = useState(false);
-  const selectRef = useRef(null);
-
-  const handleChange = (data: any) => {
-    setFormData({ ...formData, ClassList: data });
-  };
-
-  const setOptions = (value: any) => {
-    if (selectedOptions.includes(value)) {
-      const opts = selectedOptions.filter((item: any) => item != value);
-      setSelectedOptions([...opts]);
-      handleChange([...opts]);
-    } else {
-      setSelectedOptions([...selectedOptions, value]);
-      handleChange([...selectedOptions, value]);
-    }
-  };
-
-  useEffect(() => {
-    const match = data?.filter((item) =>
-      item?.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    if (match) {
-      setFilterOptions(match);
-    } else {
-      setFilterOptions(data);
-    }
-  }, [data, searchText]);
-
-  useEffect(() => {
-    const closeHandler = (event: any) => {
-      if (
-        selectRef.current &&
-        !event.composedPath().includes(selectRef.current)
-      ) {
-        setActive(false);
-      }
-    };
-    document.addEventListener("click", closeHandler);
-    return () => {
-      document.removeEventListener("click", closeHandler);
-    };
-  }, []);
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="border border-gray-200 rounded-md" ref={selectRef}>
-        <div className="px-2">
-          {selectedOptions && selectedOptions.length > 0 && (
-            <div className="flex items-center gap-2 text-xs flex-wrap">
-              {selectedOptions.map((opt: any) => {
-                return (
-                  <span
-                    key={opt}
-                    className="flex flex-wrap items-center gap-1 bg-blue-200 mt-1 p-1 rounded-md"
-                  >
-                    <span className="font-bold"> {opt}</span>
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => setOptions(opt)}
-                    >
-                      <IoMdClose />
-                    </span>
-                  </span>
-                );
-              })}
-            </div>
-          )}
-          <input
-            type="text"
-            placeholder="Search Classes..."
-            className="py-2 w-full outline-none"
-            onKeyUp={(e) => setSearchText((e.target as HTMLInputElement).value)}
-            onClick={() => setActive(true)}
-          />
-        </div>
-        {active && (
-          <div className="flex flex-col border-t-2 border-gray-400 max-h[200px] overflow-y-auto py-3 px-2">
-            {filterOptions.map((option: any) => {
-              return (
-                <div
-                  className="flex items-center gap-1"
-                  key={option.name}
-                  onClick={() => setOptions(option.name)}
-                >
-                  <input
-                    readOnly
-                    type="checkbox"
-                    checked={selectedOptions.includes(option.name)}
-                  />
-                  {option.name}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  return <MuitiSelectDropdown options={data} index={2} />;
 };
-
 const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [createTeacher, { isLoading }] = useCreateTeacherMutation();
   const [username, setUsername] = useState("");
@@ -236,7 +34,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [img, setImg] = useState("");
+  const [img, setImg] = useState();
   const [bloodType, setBloodType] = useState<Blood_Types>();
   const [gender, setGender] = useState<User_Sex>();
   const [subjects, setSubjects] = useState<any>();
@@ -339,13 +137,13 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
-        <input
+        {/* <input
           type="file"
           id="img"
           className={inputStyles}
-          value={img}
-          onChange={(e) => setImg(e.target.value)}
-        />
+          value={img?.name}
+          onChange={(e) => setImg(e.target.files[0])}
+        /> */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-2">
           <select
             className={selectStyles}
@@ -385,14 +183,15 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
           onChange={(e) => setBirthday(e.target.value)}
         />
 
-        {/* Subjects and Classes Selection  */}
+        {/* Subjects and Lessons Selection  */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
           {/* Subjects */}
           <div className={selectStyles}>
+            {/* <SubjectDropBox /> */}
             <SubjectDropBox />
           </div>
 
-          {/* Classes */}
+          {/* Lessons */}
           <div className={selectStyles}>
             <input
               type="text"
@@ -403,8 +202,9 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
             />
           </div>
         </div>
+        {/* Classes */}
         <div className={selectStyles}>
-            <ClassDropBox/>
+          <ClassDropBox />
         </div>
         <button
           type="submit"
