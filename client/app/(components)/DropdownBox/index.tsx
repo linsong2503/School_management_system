@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
 
-type Props = {
+type DropProps = {
   options: any;
   index: number;
 };
 
-const MuitiSelectDropdown = ({ options, index }: Props) => {
-  const [textObj, setTextObj] = useState("");
+const DropDownBox = ({ options, index }: DropProps) => {
+  let TextObj = "";
   switch (index) {
     case 1:
-      setTextObj("Subjects");
+      TextObj = "Subjects";
       break;
     case 2:
-      setTextObj("Classes");
+      TextObj = "Classes";
       break;
     default:
       break;
@@ -92,7 +92,7 @@ const MuitiSelectDropdown = ({ options, index }: Props) => {
           )}
           <input
             type="text"
-            placeholder={`Search ${textObj}...`}
+            placeholder={`Search ${TextObj} ...`}
             className="py-2 w-full outline-none"
             onKeyUp={(e) => setSearchText((e.target as HTMLInputElement).value)}
             onClick={() => setActive(true)}
@@ -123,4 +123,4 @@ const MuitiSelectDropdown = ({ options, index }: Props) => {
   );
 };
 
-export default MuitiSelectDropdown;
+export default DropDownBox;

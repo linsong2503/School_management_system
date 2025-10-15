@@ -10,21 +10,21 @@ import React, { useState } from "react";
 import { formatISO } from "date-fns";
 import Modal from "./modal";
 import LoadingSpinner from "../Loading";
-import MuitiSelectDropdown from "../DropdownBox";
-
+import { CldUploadWidget } from "next-cloudinary";
+import { Upload } from "lucide-react";
+import DropDownBox from "../DropdownBox";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const SubjectDropBox = () => {
+const SubjectDropDownBox = () => {
   const { data } = useGetSubjectsQuery();
-  return <MuitiSelectDropdown options={data} index={1} />;
+  return <DropDownBox options={data} index={1} />;
 };
-
-const ClassDropBox = () => {
+const ClassDropDownBox = () => {
   const { data } = useGetClassesQuery();
-  return <MuitiSelectDropdown options={data} index={2} />;
+  return <DropDownBox options={data} index={2} />;
 };
 const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [createTeacher, { isLoading }] = useCreateTeacherMutation();
@@ -137,13 +137,21 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
-        {/* <input
-          type="file"
-          id="img"
-          className={inputStyles}
-          value={img?.name}
-          onChange={(e) => setImg(e.target.files[0])}
-        /> */}
+        <CldUploadWidget uploadPreset="school">
+          {({ open }) => {
+            return (
+              <div
+                className={inputStyles}
+                onClick={() => open()}
+              >
+               <div className="flex items-center gap-2 justify-center cursor-pointer">
+                 <Upload />
+                <span>Upload an image</span>
+               </div>
+              </div>
+            );
+          }}
+        </CldUploadWidget>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-2">
           <select
             className={selectStyles}
@@ -187,8 +195,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
           {/* Subjects */}
           <div className={selectStyles}>
-            {/* <SubjectDropBox /> */}
-            <SubjectDropBox />
+            <SubjectDropDownBox />
           </div>
 
           {/* Lessons */}
@@ -204,7 +211,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
         </div>
         {/* Classes */}
         <div className={selectStyles}>
-          <ClassDropBox />
+          <ClassDropDownBox />
         </div>
         <button
           type="submit"
