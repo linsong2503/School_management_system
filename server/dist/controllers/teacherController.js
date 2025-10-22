@@ -49,7 +49,7 @@ const getTeacherById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getTeacherById = getTeacherById;
 const createTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, name, surname, email, phone, address, img, bloodType, sex, createdAt, updatedAt, subjectNames, classes, birthday, st, } = req.body;
+    const { username, name, surname, email, phone, address, img, bloodType, sex, subjects = [], createdAt, updatedAt, birthday, st, } = req.body;
     try {
         const newTeacher = yield prisma.teacher.create({
             data: {
@@ -67,10 +67,8 @@ const createTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 st,
                 birthday,
                 subjects: {
-                    create: [
-                        { name: subjectNames }
-                    ]
-                }
+                    connect: subjects.map((name) => ({ name })),
+                },
             },
         });
         res.status(201).json(newTeacher);

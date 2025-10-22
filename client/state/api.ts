@@ -10,14 +10,14 @@ export interface Teacher {
   img: string;
   address: string;
   bloodType: string;
-  sex: User_Sex;
+  sex: string;
   createdAt: Date;
   updatedAt?: Date;
   birthday: string;
   st: string;
-  subjects: string;
+  subjects: Subjects[];
   lessons: string;
-  classes: string;
+  classes: Classes[];
 }
 
 export interface Subjects {
@@ -56,20 +56,8 @@ export interface Event {
   // class   Class? @relation(fields: [classId], references: [id])
 }
 
-export enum User_Sex {
-  MALE,
-  FEMALE,
-}
-export enum Blood_Types {
-  a_p = "A+",
-  b_p = "B+",
-  ab_p = "AB+",
-  o_p = "O+",
-  a_m = "A-",
-  b_m = "B-",
-  ab_m = "AB-",
-  o_m = "O-",
-}
+
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
   reducerPath: "api",

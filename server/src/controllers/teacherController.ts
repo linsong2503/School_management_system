@@ -54,10 +54,9 @@ export const createTeacher = async (
     img,
     bloodType,
     sex,
+    subjects=[],
     createdAt,
     updatedAt,
-    subjectNames,
-    classes,
     birthday,
     st,
   } = req.body;
@@ -77,11 +76,9 @@ export const createTeacher = async (
         updatedAt,
         st,
         birthday,
-        subjects :{
-          create:[
-            {name:subjectNames}
-          ]
-        }
+        subjects: {
+          connect: subjects.map((name:any) => ({ name })),
+        },
       },
     });
     res.status(201).json(newTeacher);

@@ -5,9 +5,10 @@ import { IoMdClose } from "react-icons/io";
 type DropProps = {
   options: any;
   index: number;
+  onChange:any;
 };
 
-const DropDownBox = ({ options, index }: DropProps) => {
+const DropDownBox = ({ options, index,onChange }: DropProps) => {
   let TextObj = "";
   switch (index) {
     case 1:
@@ -19,25 +20,20 @@ const DropDownBox = ({ options, index }: DropProps) => {
     default:
       break;
   }
-  const [formData, setFormData] = useState({ List: [] });
   const [searchText, setSearchText] = useState("");
   const [filterOptions, setFilterOptions] = useState<any>([]);
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [active, setActive] = useState(false);
   const selectRef = useRef(null);
 
-  const handleChange = (data: any) => {
-    setFormData({ ...formData, List: data });
-  };
-
   const setOptions = (value: any) => {
     if (selectedOptions.includes(value)) {
       const opts = selectedOptions.filter((item: any) => item != value);
       setSelectedOptions([...opts]);
-      handleChange([...opts]);
+      onChange([...opts]);
     } else {
       setSelectedOptions([...selectedOptions, value]);
-      handleChange([...selectedOptions, value]);
+      onChange([...selectedOptions, value]);
     }
   };
 
