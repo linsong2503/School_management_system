@@ -56,8 +56,6 @@ export interface Event {
   // class   Class? @relation(fields: [classId], references: [id])
 }
 
-
-
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
   reducerPath: "api",
@@ -74,11 +72,25 @@ export const api = createApi({
       query: () => "teachers",
       providesTags: ["Teachers"],
     }),
+    getTeacherById: build.query({
+      query: (id) => `teachers/${id}`,
+    }),
     createTeacher: build.mutation<Teacher, Partial<Teacher>>({
       query: (teachers) => ({
         url: "teachers",
         method: "POST",
         body: teachers,
+      }),
+      invalidatesTags: ["Teachers"],
+    }),
+    updateTeacher: build.mutation<
+      Teacher,
+      { teacherId: string } & Partial<Teacher>
+    >({
+      query: ({ teacherId, ...teacher }) => ({
+        url: `teachers/${teacherId}`,
+        method: "PUT",
+        body: teacher,
       }),
       invalidatesTags: ["Teachers"],
     }),
@@ -142,7 +154,9 @@ export const api = createApi({
 
 export const {
   useGetTeachersQuery,
+  useGetTeacherByIdQuery,
   useCreateTeacherMutation,
+  useUpdateTeacherMutation,
   // useGetStudentsQuery,
   useGetClassesQuery,
   useGetSubjectsQuery,

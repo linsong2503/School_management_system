@@ -82,7 +82,7 @@ const createTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.createTeacher = createTeacher;
 const updateTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const ID = parseInt(req.params.id);
-    const { username, name, surname, email, phone, address, img, bloodType, sex, updatedAt, birthday, st, } = req.body;
+    const { username, name, surname, email, phone, address, updatedAt, subjects = [], st, } = req.body;
     try {
         const updatedTeacher = yield prisma.teacher.update({
             where: {
@@ -95,15 +95,14 @@ const updateTeacher = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 email,
                 phone,
                 address,
-                img,
-                bloodType,
-                sex,
+                subjects: {
+                    connect: subjects.map((name) => ({ name })),
+                },
                 updatedAt,
-                birthday,
                 st,
             },
         });
-        res.json(exports.updateTeacher);
+        res.json(updatedTeacher);
     }
     catch (error) {
         res

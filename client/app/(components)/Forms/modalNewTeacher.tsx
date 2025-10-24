@@ -8,6 +8,7 @@ import LoadingSpinner from "../Loading";
 import { CldUploadWidget } from "next-cloudinary";
 import { Upload } from "lucide-react";
 import DropDownBox from "../DropdownBox";
+import { toast } from "react-toastify";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -27,6 +28,8 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [gender, setGender] = useState("");
   const [subject, setSubjects] = useState<any>([]);
   const [birthday, setBirthday] = useState("");
+
+  // Clear form inputs after submitting
   const clearForm = () => {
     setUsername("");
     setName("");
@@ -40,6 +43,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
     setSubjects([]);
     setBloodType("");
   };
+
   const handleSubmit = async () => {
     // Convert date input into ISO format
     const formattedBirthDay = formatISO(new Date(birthday), {
@@ -63,6 +67,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
     });
     if (isSuccess) {
       clearForm();
+      toast("Successfully created teacher information");
     }
   };
 

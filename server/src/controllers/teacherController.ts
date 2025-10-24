@@ -54,7 +54,7 @@ export const createTeacher = async (
     img,
     bloodType,
     sex,
-    subjects=[],
+    subjects = [],
     createdAt,
     updatedAt,
     birthday,
@@ -77,7 +77,7 @@ export const createTeacher = async (
         st,
         birthday,
         subjects: {
-          connect: subjects.map((name:any) => ({ name })),
+          connect: subjects.map((name: any) => ({ name })),
         },
       },
     });
@@ -101,11 +101,8 @@ export const updateTeacher = async (
     email,
     phone,
     address,
-    img,
-    bloodType,
-    sex,
     updatedAt,
-    birthday,
+    subjects = [],
     st,
   } = req.body;
   try {
@@ -120,15 +117,14 @@ export const updateTeacher = async (
         email,
         phone,
         address,
-        img,
-        bloodType,
-        sex,
+        subjects: {
+          connect: subjects.map((name: any) => ({ name })),
+        },
         updatedAt,
-        birthday,
         st,
       },
     });
-    res.json(updateTeacher);
+    res.json(updatedTeacher);
   } catch (error: any) {
     res
       .status(500)

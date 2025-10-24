@@ -34,7 +34,7 @@ import { Student } from "@prisma/client";
 import LoadingSpinner from "@/app/(components)/Loading";
 import TableHeader from "../../../(components)/TableHeader";
 import NotFound from "@/app/(components)/Error";
-import ParentActions from "@/app/(components)/Users/ParentActions";
+import ParentActions from "@/app/(components)/Users/UserActions";
 type OwnerState = {
   expanded: boolean;
 };

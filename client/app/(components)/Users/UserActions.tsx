@@ -3,21 +3,21 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import { Preview, Edit, Delete } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import EditBox from "../Forms/editParents";
+import EditTeacherBox from "../Forms/editTeachers";
 import DeleteDialog from "../Delete/deleteRecord";
-const ParentActions = ({ params }: any) => {
+const UserActions = ({ params }: any) => {
   const router = useRouter();
-  const [isParentModelOpen, setIsParentModalOpen] = useState(false);
+  const [isTeacherModelOpen, setIsTeacherModalOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <Box>
-      <EditBox
+      <EditTeacherBox
         id={params.id}
-        isOpen={isParentModelOpen}
-        onClose={() => setIsParentModalOpen(false)}
+        isOpen={isTeacherModelOpen}
+        onClose={() => setIsTeacherModalOpen(false)}
       />
       <DeleteDialog
-        opt={3}
+        opt={1}
         id={params.id}
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -33,7 +33,7 @@ const ParentActions = ({ params }: any) => {
         </IconButton>
       </Tooltip>
       <Tooltip title="Edit" className="px-4 xl:px-6">
-        <IconButton onClick={() => setIsParentModalOpen(true)}>
+        <IconButton onClick={() => setIsTeacherModalOpen(true)}>
           <Edit />
         </IconButton>
       </Tooltip>
@@ -46,4 +46,4 @@ const ParentActions = ({ params }: any) => {
   );
 };
 
-export default ParentActions;
+export default UserActions;
