@@ -11,6 +11,9 @@ export const getTeachers = async (
       where: {
         st: "A",
       },
+      orderBy: {
+        id: "asc",
+      },
       include: {
         subjects: true,
         lessons: true,
