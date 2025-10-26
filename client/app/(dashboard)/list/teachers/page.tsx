@@ -210,20 +210,18 @@ const Teachers = () => {
     );
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Teacher ID", width: 80 },
     { field: "username", headerName: "Username", width: 100, editable: true },
-    { field: "name", headerName: "Name", width: 150, editable: true },
-    { field: "surname", headerName: "Surname", width: 150, editable: true },
-    { field: "birthday", headerName: "Birthday", width: 180, editable: true },
+    { field: "name", headerName: "Name", width: 100, editable: true },
+    { field: "surname", headerName: "Surname", width: 100, editable: true },
+    { field: "birthday", headerName: "Birthday", width: 90, editable: true },
     { field: "email", headerName: "Email", width: 150, editable: true },
     { field: "phone", headerName: "Phone", width: 100, editable: true },
-    { field: "address", headerName: "Address", width: 200, editable: true },
-    { field: "bloodType", headerName: "Blood Type", width: 80, editable: true },
+    { field: "address", headerName: "Address", width: 150, editable: true },
     { field: "sex", headerName: "Sex", width: 80, editable: true },
     {
       field: "subjects",
       headerName: "Subjects",
-      width: 180,
+      width: 120,
       editable: true,
       renderCell: (cellValues: GridRenderCellParams<Subject>) => {
         return (
@@ -236,7 +234,7 @@ const Teachers = () => {
     {
       field: "lessons",
       headerName: "Lessons",
-      width: 180,
+      width: 120,
       editable: true,
       renderCell: (cellValues: GridRenderCellParams<Lesson>) => {
         return (
@@ -249,7 +247,7 @@ const Teachers = () => {
     {
       field: "classes",
       headerName: "Classes",
-      width: 180,
+      width: 120,
       renderCell: (cellValues: GridRenderCellParams<Class>) => {
         return (
           <div>
@@ -271,7 +269,7 @@ const Teachers = () => {
 
   return (
     <>
-      <div className="pt-3">
+      <div className="pt-2">
         <TableHeader index={1} />
       </div>
       <div style={{ height: 500, width: "100%" }}>
