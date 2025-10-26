@@ -175,7 +175,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
                   <div className={inputStyles} onClick={() => open()}>
                     <div className="flex items-center gap-2 justify-center cursor-pointer">
                       <Upload />
-                      <span>Upload an image</span>
+                      <span>Upload Teacher&apos;s Image</span>
                     </div>
                   </div>
                 );

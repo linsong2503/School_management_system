@@ -15,8 +15,8 @@ type Props = {
 
 const EditTeacherBox = ({ isOpen, onClose, id }: Props) => {
   const router = useRouter();
-  const { data } = useGetTeacherByIdQuery(id || "");
-  const { currentData } = useGetSubjectsQuery();
+  const { data:singleTeacherData } = useGetTeacherByIdQuery(id || "");
+  const { data:subjectData } = useGetSubjectsQuery();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -30,15 +30,15 @@ const EditTeacherBox = ({ isOpen, onClose, id }: Props) => {
 
   useEffect(() => {
     const fetchData = () => {
-      setUsername(data.username);
-      setName(data.name);
-      setSurname(data.surname);
-      setEmail(data.email);
-      setPhone(data.phone);
-      setAddress(data.address);
-      setSubjects(data.subjects);
+      setUsername(singleTeacherData.username);
+      setName(singleTeacherData.name);
+      setSurname(singleTeacherData.surname);
+      setEmail(singleTeacherData.email);
+      setPhone(singleTeacherData.phone);
+      setAddress(singleTeacherData.address);
+      setSubjects(singleTeacherData.subjects);
     };
-    if (data) {
+    if (singleTeacherData) {
       // If errors occur , remove properties such as username: SetStateAction<string>;
       // and so on in api.ts file
       fetchData();
@@ -50,7 +50,7 @@ const EditTeacherBox = ({ isOpen, onClose, id }: Props) => {
       // window.location.reload();
       router.refresh();
     }
-  }, [error, isSuccess, data, router]);
+  }, [error, isSuccess, singleTeacherData, router]);
 
   const handleSubmit = async () => {
     await updateTeacher({
@@ -149,7 +149,7 @@ const EditTeacherBox = ({ isOpen, onClose, id }: Props) => {
             {/* Subjects */}
             <div className={selectStyles}>
               <DropDownBox
-                options={currentData}
+                options={subjectData}
                 index={1}
                 onChange={handleChange}
               />
