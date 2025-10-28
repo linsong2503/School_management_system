@@ -7,7 +7,7 @@ export interface Teacher {
   surname: string;
   email: string;
   phone: string;
-  img: string;
+  img?: string;
   address: string;
   bloodType: string;
   sex: string;
@@ -15,18 +15,39 @@ export interface Teacher {
   updatedAt?: Date;
   birthday: string;
   st: string;
-  subjects: Subjects[];
+  subjects: Subject[];
   lessons: string;
-  classes: Classes[];
+  classes: Class[];
 }
 
-export interface Subjects {
+export interface Student {
+  id: number;
+  username: string;
+  name: string;
+  surname: string;
+  email: string;
+  phone: string;
+  address: string;
+  img?: string;
+  bloodType: string;
+  sex: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  parentId: number;
+  parent: Parent;
+  classId: Class;
+  gradeId: number;
+  grade: Grade;
+  attendances: Attendance;
+}
+
+export interface Subject {
   id: number;
   name: string;
-  teachers: Teacher[];
+  teachers?: Teacher[];
 }
 
-export interface Parents {
+export interface Parent {
   id: number;
   username: string;
   name: string;
@@ -40,20 +61,86 @@ export interface Parents {
   // students: Student[];
 }
 
-export interface Classes {
+export interface Class {
   id: number;
   name: string;
   capacity: number;
 }
 
+export interface Lesson {
+  id: number;
+  name: string;
+  day: Date;
+  startTime: Date;
+  endTime: Date;
+  subjectId: number;
+  subject: Subject;
+  classId: number;
+  class: Class;
+  teacherId: number;
+  teacher: Teacher;
+  exams: Exam[];
+  assignments: Assignment[];
+  attendances: Attendance[];
+}
+
+export interface Exam {
+  id: number;
+  title: string;
+  startTime: Date;
+  endTime: Date;
+
+  lessonID: number;
+  lesson: Lesson;
+  results: Result;
+}
+
+export interface Assignment {
+  id: number;
+  title: string;
+  startTime: Date;
+  dueTime: Date;
+
+  lessonId: number;
+  lesson: Lesson;
+  results: Result[];
+}
+
+export interface Result {
+  id: number;
+  score: number;
+  examId?: number;
+  exam?: Exam;
+  assignmentId?: number;
+  assignment?: Assignment;
+  studentId: number;
+  student: Student;
+}
+
+export interface Grade {
+  id: number;
+  level: number;
+  student: Student[];
+  classes: Class[];
+}
+
 export interface Event {
   id: number;
   title: string;
-  description: string;
+  description?: string;
   startTime: Date;
   endTime: Date;
-  // classId?:number
-  // class   Class? @relation(fields: [classId], references: [id])
+  classId?: number;
+  class?: Class;
+}
+export interface Attendance {
+  id: number;
+  date: Date;
+  present: boolean;
+  studentId: number;
+  student: Student;
+  lessonsId: number;
+  lesson: Lesson;
 }
 
 export const api = createApi({
@@ -68,13 +155,16 @@ export const api = createApi({
     "Events",
   ],
   endpoints: (build) => ({
+    //  Teacher API
     getTeachers: build.query<Teacher[], void>({
       query: () => "teachers",
       providesTags: ["Teachers"],
     }),
+
     getTeacherById: build.query({
       query: (id) => `teachers/${id}`,
     }),
+
     createTeacher: build.mutation<Teacher, Partial<Teacher>>({
       query: (teachers) => ({
         url: "teachers",
@@ -83,6 +173,7 @@ export const api = createApi({
       }),
       invalidatesTags: ["Teachers"],
     }),
+
     updateTeacher: build.mutation<
       Teacher,
       { teacherId: string } & Partial<Teacher>
@@ -94,24 +185,59 @@ export const api = createApi({
       }),
       invalidatesTags: ["Teachers"],
     }),
-    // getStudents: build.query<Student[], void>({
-    //   query: () => "students",
-    //   providesTags: ["Students"],
-    // }),
 
-    getClasses: build.query<Classes[], void>({
+    // Student API
+    getStudents: build.query<Student[], void>({
+      query: () => "students",
+      providesTags: ["Students"],
+    }),
+
+    getStudentById: build.query({
+      query: (id) => `/students/${id}`,
+    }),
+
+    createStudent: build.mutation<Student, Partial<Student>>({
+      query: (students) => ({
+        url: "students",
+        method: "POST",
+        body: students,
+      }),
+      invalidatesTags: ["Students"],
+    }),
+
+    updateStudent: build.mutation<
+      Student,
+      { studentId: string } & Partial<Student>
+    >({
+      query: (studentId, ...student) => ({
+        url: `/students/${studentId}`,
+        method: "PUT",
+        body: student,
+      }),
+      invalidatesTags: ["Students"],
+    }),
+
+    // Class API
+
+    getClasses: build.query<Class[], void>({
       query: () => "classes",
       providesTags: ["Classes"],
     }),
-    getSubjects: build.query<Subjects[], void>({
+
+    //  Subject API
+
+    getSubjects: build.query<Subject[], void>({
       query: () => "subjects",
       providesTags: ["Subjects"],
     }),
 
-    getParents: build.query<Parents[], void>({
+    // Parent API
+
+    getParents: build.query<Parent[], void>({
       query: () => "parents",
       providesTags: ["Parents"],
     }),
+
     getParentById: build.query<
       {
         address: SetStateAction<string>;
@@ -120,13 +246,14 @@ export const api = createApi({
         surname: SetStateAction<string>;
         name: SetStateAction<string>;
         username: SetStateAction<string>;
-        parent: Parents;
+        parent: Parent;
       },
       string
     >({
       query: (id) => `parents/${id}`,
     }),
-    createParent: build.mutation<Parents, Partial<Parents>>({
+
+    createParent: build.mutation<Parent, Partial<Parent>>({
       query: (parents) => ({
         url: "parents",
         method: "POST",
@@ -134,9 +261,10 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
+
     updateParent: build.mutation<
-      Parents,
-      { parentId: string } & Partial<Parents>
+      Parent,
+      { parentId: string } & Partial<Parent>
     >({
       query: ({ parentId, ...parent }) => ({
         url: `parents/${parentId}`,
@@ -145,6 +273,9 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
+
+    //  Event API
+
     getEvents: build.query<Event[], void>({
       query: () => "events",
       providesTags: ["Events"],
@@ -157,7 +288,7 @@ export const {
   useGetTeacherByIdQuery,
   useCreateTeacherMutation,
   useUpdateTeacherMutation,
-  // useGetStudentsQuery,
+  useGetStudentsQuery,
   useGetClassesQuery,
   useGetSubjectsQuery,
   useGetParentsQuery,

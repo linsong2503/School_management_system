@@ -9,23 +9,65 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStudents = void 0;
+exports.createStudent = exports.getStudentById = exports.getStudents = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const student = yield prisma.student.findMany({
+            where: {
+                st: "A",
+            },
+            orderBy: {
+                id: "asc",
+            },
             include: {
                 class: true,
                 grade: true,
                 attendances: true,
-                results: true
+                results: true,
             },
         });
         res.json(student);
     }
     catch (error) {
-        res.status(500).json({ message: `Error retrieving teachers: ${error.message}` });
+        res
+            .status(500)
+            .json({ message: `Error retrieving teachers: ${error.message}` });
     }
 });
 exports.getStudents = getStudents;
+const getStudentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const studentId = req.params.id;
+    try {
+        const student = yield prisma.student.findUnique({
+            where: {
+                id: studentId,
+            },
+            include: {
+                parent: true,
+                class: true,
+                grade: true,
+                attendances: true,
+                results: true,
+            },
+        });
+        res.status(200).json(student);
+    }
+    catch (e) {
+        res.status(404).json(`message: Error retrieving student: ${e.message}`);
+    }
+});
+exports.getStudentById = getStudentById;
+const createStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const newStudent = yield prisma.student.create({
+            data: req.body,
+        });
+        res.status(201).json(newStudent);
+    }
+    catch (error) {
+        res.status(500).json(`message: Error creating student: ${error.message}`);
+    }
+});
+exports.createStudent = createStudent;

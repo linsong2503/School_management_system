@@ -80,7 +80,7 @@ const FinanceChart = () => {
       <div className="flex justify-between items-center mb-3">
         <h1 className="font-semibold text-[15px]">Finance</h1>
         <Image
-          src={"/moreDark.png"}
+          src={"/the_others/moreDark.png"}
           alt=""
           width={20}
           height={20}

@@ -18,6 +18,9 @@ const getTeachers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             where: {
                 st: "A",
             },
+            orderBy: {
+                id: "asc",
+            },
             include: {
                 subjects: true,
                 lessons: true,

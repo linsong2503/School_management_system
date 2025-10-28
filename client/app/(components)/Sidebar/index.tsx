@@ -167,7 +167,7 @@ const Sidebar = () => {
         }`}
       >
         <Image
-          src="/school_logo.png"
+          src="/the_others/school_logo.png"
           alt=""
           width={27}
           height={27}

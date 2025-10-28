@@ -45,7 +45,7 @@ const AttendanceChart = () => {
       <div className="flex justify-between items-center">
         <h1 className="font-semibold text-[15px]">Attendance</h1>
         <Image
-          src={"/moreDark.png"}
+          src={"/the_others/moreDark.png"}
           alt=""
           width={20}
           height={20}

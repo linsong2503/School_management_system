@@ -34,7 +34,7 @@ const SideCalendar = () => {
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-xl my-4">Events</h1>
         <Image
-        src={"/moreDark.png"}
+        src={"/the_others/moreDark.png"}
         alt=""
         width={20}
         height={20}

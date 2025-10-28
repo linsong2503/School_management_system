@@ -31,7 +31,7 @@ const RadChart = () => {
       <div className="flex justify-between items-center">
         <h1 className="font-semibold text-[15px]">Students</h1>
         <Image
-          src={"/moreDark.png"}
+          src={"/the_others/moreDark.png"}
           alt=""
           width={20}
           height={20}
@@ -52,7 +52,7 @@ const RadChart = () => {
           </RadialBarChart>
         </ResponsiveContainer>
         <Image
-          src="/maleFemale.png"
+          src="/the_others/maleFemale.png"
           alt=""
           width={50}
           height={50}
