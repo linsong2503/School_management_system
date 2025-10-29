@@ -35,7 +35,8 @@ export interface Student {
   updatedAt?: Date;
   parentId: number;
   parent: Parent;
-  classId: Class;
+  classId: number;
+  className: Class;
   gradeId: number;
   grade: Grade;
   attendances: Attendance;
