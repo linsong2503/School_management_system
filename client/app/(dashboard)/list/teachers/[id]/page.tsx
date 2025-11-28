@@ -1,12 +1,14 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import React, { use } from "react";
 import Image from "next/image";
-import { Teacher } from "@prisma/client";
-import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import BigCalendar from "@/app/(components)/Calendars/BigCalendar";
 import Announcements from "@/app/(components)/Users/Announcements";
 import Link from "next/link";
 import PerformanceChart from "@/app/(components)/Charts/PerformanceChart";
+import { useGetTeacherByIdQuery } from "@/state/api";
+import { Droplet, Mail, Phone } from "lucide-react";
 const months = [
   "January",
   "February",
@@ -21,32 +23,9 @@ const months = [
   "November",
   "December",
 ];
-const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = await params;
-  const teacher:
-    | (Teacher & {
-        _count: { subjects: number; lessons: number; classes: number };
-      })
-    | null = await prisma.teacher.findUnique({
-    where: { id },
-    include: {
-      _count: {
-        select: {
-          subjects: true,
-          lessons: true,
-          classes: true,
-        },
-      },
-    },
-  });
-  if (!teacher) {
-    return notFound();
-  }
-  const DoB = teacher?.birthday.getMonth();
-  let month;
-  if (DoB !== undefined) {
-    month = months[DoB];
-  }
+const SingleTeacherPage = (params: any) => {
+  const id = params.id;
+  const { data: singleTeacherData } = useGetTeacherByIdQuery(id || "");
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 xl:flex-row">
       {/* LEFT */}
@@ -54,143 +33,89 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
         {/* TOP */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* USER CARD */}
-          <div className="bg-blue-200 px-6 py-4 rounded-md flex-1 flex gap-5">
-            <div className="w-full md:w-1/3 flex items-center  ">
+          <div className="bg-blue-200 py-6 px-4 rounded-md flex flex-1 gap-2">
+            <div className="w-1/3">
               <Image
-                src={"/noAvatar.png"}
-                alt=""
-                width={144}
-                height={144}
-                className="w-35 h-35 rounded-full object-cover"
+                src={"/avatars/avatar.png"}
+                alt="avatar"
+                width={120}
+                height={120}
+                className="object-cover rounded-full w-30 h-30"
               />
             </div>
-            <div className="w-2/3 flex flex-col justify-between gap-4">
-              <h1 className="font-semibold text-xl">
-                {teacher?.name + " " + teacher.surname}
-              </h1>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-medium">
-                <div className="w-full md:w-1/3 2xl:w-1/3 lg:w-full items-center flex gap-2">
-                  <Image src={"/blood.png"} alt="" width={15} height={15} />
-                  <span>{teacher?.bloodType}</span>
-                </div>
-                <div className="w-full md:w-1/3 2xl:w-1/3 lg:w-full items-center flex gap-2">
-                  <Image src={"/date.png"} alt="" width={15} height={15} />
-                  <span>{`${
-                    month + " " + teacher?.birthday.getFullYear()
-                  }`}</span>
-                </div>
-                <div className="w-full md:w-1/3 2xl:w-1/3 lg:w-full items-center flex gap-2">
-                  <Image src={"/mail.png"} alt="" width={15} height={15} />
-                  <span>{teacher?.email}</span>
-                </div>
-                <div className="w-full md:w-1/3 2xl:w-1/3 lg:w-full items-center flex gap-2">
-                  <Image src={"/phone.png"} alt="" width={15} height={15} />
-                  <span>{teacher?.phone}</span>
-                </div>
+            <div className="w-2/3 flex flex-col justify-between gap-3">
+              <span className="text-xl font-medium">Name</span>
+              <div className="flex items-center gap-2">
+                <Droplet size={"16px"} />
+                <span className="">Blood Type</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail size={16} />
+                <span className="">Email</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone size={16} />
+                <span className="">phone</span>
               </div>
             </div>
           </div>
           {/* SMALL CARDS */}
-          <div className="flex-1 flex flex-wrap justify-between gap-4">
-            {/* CARD */}
-            <div className="w-full md:w-[98%]  xl:w-[45%] 2xl:w-[48%]  bg-white rounded-md p-4 flex items-center gap-5 ">
+          <div className="flex flex-1 gap-3 flex-wrap justify-between">
+            <div className=" flex gap-2 items-center bg-white w-[48%] xl:w-[49%] 2xl:w-[48%] py-2 px-3 rounded-md">
               <Image
-                src={"/singleAttendance.png"}
+                src={"/the_others/singleAttendance.png"}
                 alt=""
-                width={20}
-                height={20}
-                className="w-6 h-6"
+                width={25}
+                height={25}
               />
-              <div className="">
-                <span className="font-semibold text-xl">100%</span>
-                <p>Attendance</p>
+              <div className="font-bold ">
+                <span >Attendance</span>
+                <span className="px-3">100%</span>
               </div>
             </div>
-            {/* CARD */}
-            <div className="w-full md:w-[98%] xl:w-[45%] 2xl:w-[48%] bg-white rounded-md p-4 flex items-center gap-5 ">
+            <div className=" gap-2 flex items-center bg-white w-[48%] xl:w-[49%] 2xl:w-[48%] py-2 px-3 rounded-md">
               <Image
-                src={"/singleBranch.png"}
+                src={"/the_others/singleBranch.png"}
                 alt=""
-                width={20}
-                height={20}
-                className="w-6 h-6"
+                width={25}
+                height={25}
               />
-              <div className="">
-                <span className="font-semibold text-xl">
-                  {teacher._count.subjects}
-                </span>
-                <p>Branches</p>
+              <div className="font-bold">
+                <span >Branches</span>
+                <span className="px-3">3</span>
               </div>
             </div>
-            {/* CARD */}
-            <div className="w-full md:w-[98%] xl:w-[45%] 2xl:w-[48%] bg-white rounded-md p-4 flex items-center gap-5">
+            <div className=" gap-2 flex items-center bg-white w-[48%] xl:w-[49%] 2xl:w-[48%] py-2 px-3 rounded-md">
               <Image
-                src={"/singleClass.png"}
+                src={"/the_others/singleClass.png"}
                 alt=""
-                width={20}
-                height={20}
-                className="w-6 h-6"
+                width={25}
+                height={25}
               />
-              <div className="">
-                <span className="font-semibold text-xl">
-                  {teacher._count.classes}
-                </span>
-                <p>Classes</p>
+              <div className="font-bold">
+                <span >Classes</span>
+                <span className="px-3">6</span>
               </div>
             </div>
-            {/* CARD */}
-            <div className="w-full md:w-[98%] xl:w-[45%] 2xl:w-[48%] bg-white rounded-md p-4 flex items-center gap-5">
+            <div className=" gap-2 flex items-center bg-white w-[48%] xl:w-[49%] 2xl:w-[48%]  py-2 px-3 rounded-md">
               <Image
-                src={"/singleLesson.png"}
+                src={"/the_others/singleLesson.png"}
                 alt=""
-                width={20}
-                height={20}
-                className="w-6 h-6"
+                width={25}
+                height={25}
               />
-              <div className="">
-                <span className="font-semibold text-xl">
-                  {teacher._count.lessons}
-                </span>
-                <p>Lessons</p>
+              <div className="font-bold ">
+                <span >Lessons</span>
+                <span className="px-3">6</span>
               </div>
             </div>
           </div>
         </div>
         {/* BOTTOM */}
-        <div className="mt-4 bg-white p-4 rounded-md h-[800px]">
-          <h1 className="font-semibold text-xl"> Teacher&apos;s Schedule</h1>
-          <BigCalendar />
-        </div>
+        <div className=""></div>
       </div>
       {/* RIGHT */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-4">
-        <div className="bg-white p-4 rounded-md">
-          <h1 className="font-semibold text-xl">Shortcuts</h1>
-          <div className="mt-4 gap-3 flex items-center flex-wrap">
-            <Link href={""} className="bg-blue-100 p-2 rounded-md w-fit">
-              Teacher&apos;s Classes
-            </Link>
-            <Link href={""} className="bg-green-100 p-2 rounded-md w-fit">
-              Teacher&apos;s Students
-            </Link>
-            <Link href={""} className="bg-pink-100 p-2 rounded-md w-fit">
-              Teacher&apos;s Lessons
-            </Link>
-            <Link href={""} className="bg-purple-100 p-2 rounded-md w-fit">
-              Teacher&apos;s Exams
-            </Link>
-            <Link href={""} className="bg-yellow-100 p-2 rounded-md w-fit">
-              Teacher&apos;s Assignments
-            </Link>
-          </div>
-        </div>
-        <PerformanceChart />
-        <Announcements />
-      </div>
+      <div className="w-full xl:w-1/3">r</div>
     </div>
   );
 };

@@ -10,11 +10,11 @@ datasource db {
 model Admin {
   id       String @id
   username String @unique
-  st    String 
+  st       String
 }
 
 model Student {
-  id          String       @id
+  id          Int          @id @default(autoincrement())
   username    String       @unique
   name        String
   surname     String
@@ -23,19 +23,20 @@ model Student {
   address     String
   img         String?
   bloodType   String
-  sex         UserSex
+  sex         String
   createdAt   DateTime
   updatedAt   DateTime
-  parentId    Int
-  parent      Parent       @relation(fields: [parentId], references: [id])
-  classId     Int
-  class       Class        @relation(fields: [classId], references: [id])
+  parentId    Int?
+  parent      Parent[]
+  class_name  String
+  parent_phoneNum String?
+  class       Class        @relation(fields: [class_name], references: [name])
   gradeId     Int
   grade       Grade        @relation(fields: [gradeId], references: [id])
   attendances Attendance[]
   results     Result[]
-  birthday    DateTime
-  st    String 
+  birthday    String
+  st          String
 }
 
 model Teacher {
@@ -54,8 +55,8 @@ model Teacher {
   subjects  Subject[]
   lessons   Lesson[]
   classes   Class[]
-  birthday  DateTime
-  st   String
+  birthday  DateTime  @db.Date
+  st        String
 }
 
 model Parent {
@@ -66,11 +67,10 @@ model Parent {
   email     String?   @unique
   phone     String    @unique
   address   String
-  createdAt DateTime  
-  updatedAt DateTime  
+  createdAt DateTime
+  updatedAt DateTime
   students  Student[]
-  st    String 
-
+  st        String
 }
 
 model Grade {
@@ -151,7 +151,7 @@ model Result {
   exam         Exam?       @relation(fields: [examId], references: [id])
   assignmentId Int?
   assignment   Assignment? @relation(fields: [assignmentId], references: [id])
-  studentId    String
+  studentId    Int
   student      Student     @relation(fields: [studentId], references: [id])
 }
 
@@ -160,7 +160,7 @@ model Attendance {
   date    DateTime
   present Boolean
 
-  studentId String
+  studentId Int
   student   Student @relation(fields: [studentId], references: [id])
   lessonId  Int
   lesson    Lesson  @relation(fields: [lessonId], references: [id])

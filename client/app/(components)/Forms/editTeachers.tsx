@@ -3,7 +3,7 @@ import Modal from "./modal";
 import React, { useState, useEffect } from "react";
 import { useGetSubjectsQuery, useGetTeacherByIdQuery } from "@/state/api";
 import { useUpdateTeacherMutation } from "@/state/api";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "../Loading";
 import DropDownBox from "../DropdownBox";
@@ -43,10 +43,12 @@ const EditTeacherBox = ({ isOpen, onClose, id }: Props) => {
       // and so on in api.ts file
       fetchData();
     }
-    if (error) alert(error);
+    if (error){
+      toast.error("Something went wrong")
+    };
 
     if (isSuccess) {
-      toast("Successfully updated teacher information");
+      toast.success("Successfully updated teacher information");
       // window.location.reload();
       router.refresh();
     }

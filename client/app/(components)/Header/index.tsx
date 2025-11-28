@@ -7,7 +7,7 @@ type Props = {
   isSmallText?: boolean;
 };
 
-const Header = ({ name, buttonComponent, isSmallText = false }: Props) => {
+const Header = ({name, buttonComponent, isSmallText = false }: Props) => {
   return (
     <div className="mb-5 flex w-full items-center justify-between">
       <h1

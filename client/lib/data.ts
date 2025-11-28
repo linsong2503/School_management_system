@@ -3,7 +3,7 @@
 export let role = "admin";
 export const bloodTypes = [
   { value: "A+", label: "A+" },
-  { value: "A-", label: "A+" },
+  { value: "A-", label: "A-" },
   { value: "B+", label: "B+" },
   { value: "B-", label: "B-" },
   { value: "AB+", label: "AB+" },

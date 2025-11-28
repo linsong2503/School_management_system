@@ -33,7 +33,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useGetTeachersQuery } from "@/state/api";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 import { Class, Lesson, Subject } from "@prisma/client";
-import UserActions from "@/app/(components)/Users/UserActions";
+import TeacherActions from "@/app/(components)/Users/TeacherActions";
 import LoadingSpinner from "@/app/(components)/Loading";
 import NotFound from "@/app/(components)/Error";
 import TableHeader from "@/app/(components)/TableHeader";
@@ -262,7 +262,7 @@ const Teachers = () => {
       headerName: "Actions",
       width: 180,
       renderCell: (params) => {
-        return <UserActions {...{ params }} />;
+        return <TeacherActions {...{params}}/>;
       },
     },
   ];
@@ -272,7 +272,7 @@ const Teachers = () => {
       <div className="pt-2">
         <TableHeader index={1} />
       </div>
-      <div style={{ height: 500, width: "100%" }}>
+      <div style={{ height: 520, width: "100%" }}>
         <DataGrid
           rows={teacherData}
           columns={columns}

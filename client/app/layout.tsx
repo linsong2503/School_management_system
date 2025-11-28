@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import DashboardWrapper from "./dashboardWrapper";
 import "./globals.css";
-import { ToastContainer} from "react-toastify";
+// import { ToastContainer } from "react-toastify";
+import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <DashboardWrapper>
           {children}
-          <ToastContainer position="bottom-right" theme="dark" />
+           <Toaster richColors closeButton />
         </DashboardWrapper>
       </body>
     </html>

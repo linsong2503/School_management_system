@@ -8,7 +8,7 @@ import LoadingSpinner from "../Loading";
 import { CldUploadWidget } from "next-cloudinary";
 import { Upload } from "lucide-react";
 import DropDownBox from "../DropdownBox";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -16,7 +16,8 @@ type Props = {
 
 const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const { data } = useGetSubjectsQuery();
-  const [createTeacher, { isLoading, isSuccess }] = useCreateTeacherMutation();
+  const [createTeacher, { isLoading, isSuccess, isError }] =
+    useCreateTeacherMutation();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -24,13 +25,13 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [img, setImg] = useState<any>();
-  const [bloodType, setBloodType] = useState("");
-  const [gender, setGender] = useState("");
+  const [bloodType, setBloodType] = useState("A+");
+  const [gender, setGender] = useState("Male");
   const [subject, setSubjects] = useState<any>([]);
   const [birthday, setBirthday] = useState("");
 
   // Clear form inputs after submitting
-  const clearForm = () => {
+  function clearForm() {
     setUsername("");
     setName("");
     setSurname("");
@@ -42,7 +43,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
     setImg("");
     setSubjects([]);
     setBloodType("");
-  };
+  }
 
   const handleSubmit = async () => {
     // Convert date input into ISO format
@@ -67,7 +68,12 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
     });
     if (isSuccess) {
       clearForm();
-      toast("Successfully created teacher information");
+      toast.success("Successfully created teacher information");
+    }
+    if (isError) {
+      toast.error(
+        "Errors occur when creating teacher's information. Please check your input again !"
+      );
     }
   };
 

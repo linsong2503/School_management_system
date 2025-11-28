@@ -17,9 +17,8 @@ const TableHeader = ({ index }: Props) => {
             isOpen={isModelOpen}
             onClose={() => setIsModalOpen(false)}
           />
-          <div className="pb-6 pt-3 lg:pb-4 lg:pt-4">
+          <div className="pb-6 pt-3 lg:pb-2 lg:pt-2">
             <Header
-              name="Teachers"
               buttonComponent={
                 <button
                   className="flex items-center rounded-md bg-blue-700 px-3 py-2 text-white hover:bg-blue-500"
@@ -34,14 +33,14 @@ const TableHeader = ({ index }: Props) => {
       );
     case 2:
       return (
-        <div className="px-4 xl:px-6">
+        <div className="px-2 xl:px-6">
           <ModalNewStudent
             isOpen={isModelOpen}
             onClose={() => setIsModalOpen(false)}
           />
-          <div className="pb-6 pt-3 lg:pb-4 lg:pt-4">
+          <div className="pb-6 pt-2 lg:pb-2 lg:pt-2">
             <Header
-              name="Students"
+              
               buttonComponent={
                 <button
                   className="flex items-center rounded-md bg-blue-700 px-3 py-2 text-white hover:bg-blue-500"
@@ -63,7 +62,6 @@ const TableHeader = ({ index }: Props) => {
           />
           <div className="pb-6 pt-3 lg:pb-4 lg:pt-4">
             <Header
-              name="Parents"
               buttonComponent={
                 <button
                   className="flex items-center rounded-md bg-blue-700 px-3 py-2 text-white hover:bg-blue-500"

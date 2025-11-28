@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import EditTeacherBox from "../Forms/editTeachers";
 import DeleteDialog from "../Delete/deleteRecord";
-const UserActions = ({ params }: any) => {
+const TeacherActions = ({params}:any) => {
+  
   const router = useRouter();
   const [isTeacherModelOpen, setIsTeacherModalOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -46,4 +47,4 @@ const UserActions = ({ params }: any) => {
   );
 };
 
-export default UserActions;
+export default TeacherActions;

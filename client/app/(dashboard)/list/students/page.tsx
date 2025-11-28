@@ -1,107 +1,291 @@
-import { Student, Class, Grade } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
-import prisma from "@/lib/prisma";
-const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-  },
-  {
-    header: "Student ID",
-    accessor: "studentId",
-    className: "hidden md:table-cell",
-  },
-  { header: "Grade", accessor: "grade", className: "hidden md:table-cell" },
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import {
+  DataGrid,
+  ToolbarButton,
+  Toolbar,
+  QuickFilter,
+  ExportPrint,
+  ColumnsPanelTrigger,
+  FilterPanelTrigger,
+  QuickFilterTrigger,
+  ExportCsv,
+  QuickFilterControl,
+  QuickFilterClear,
+  GridColDef,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
+import {
+  TextField,
+  Typography,
+  Menu,
+  Tooltip,
+  Badge,
+  MenuItem,
+  InputAdornment,
+  Divider,
+} from "@mui/material";
+import ViewColumnIcon from "@mui/icons-material/ViewColumn";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import SearchIcon from "@mui/icons-material/Search";
+import CancelIcon from "@mui/icons-material/Cancel";
+import NotFound from "@/app/(components)/Error";
+import LoadingSpinner from "@/app/(components)/Loading";
+import TableHeader from "@/app/(components)/TableHeader";
+import { Parent, useGetStudentsQuery } from "@/state/api";
+import StudentActions from "@/app/(components)/Users/StudentActions";
+// import { Parent} from "@prisma/client";
 
-  { header: "Phone", accessor: "phone", className: "hidden lg:table-cell" },
+type OwnerState = {
+  expanded: boolean;
+};
 
-  { header: "Address", accessor: "address", className: "hidden lg:table-cell" },
+const StyledQuickFilter = styled(QuickFilter)({
+  display: "grid",
+  alignItems: "center",
+});
 
-  { header: "Actions", accessor: "actions" },
-];
-type StudentList = Student & { class: Class } & { grade: Grade };
+const StyledToolbarButton = styled(ToolbarButton)<{ ownerState: OwnerState }>(
+  ({ theme, ownerState }) => ({
+    gridArea: "1 / 1",
+    width: "min-content",
+    height: "min-content",
+    zIndex: 1,
+    opacity: ownerState.expanded ? 0 : 1,
+    pointerEvents: ownerState.expanded ? "none" : "auto",
+    transition: theme.transitions.create(["opacity"]),
+  })
+);
 
-const RenderRow = (item: StudentList) => {
+const StyledTextField = styled(TextField)<{
+  ownerState: OwnerState;
+}>(({ theme, ownerState }) => ({
+  gridArea: "1 / 1",
+  overflowX: "clip",
+  width: ownerState.expanded ? 260 : "var(--trigger-width)",
+  opacity: ownerState.expanded ? 1 : 0,
+  transition: theme.transitions.create(["width", "opacity"]),
+}));
+
+function CustomToolbar() {
+  const [exportMenuOpen, setExportMenuOpen] = React.useState(false);
+  const exportMenuTriggerRef = React.useRef<HTMLButtonElement>(null);
+
   return (
-    <tr
-      key={item.id}
-      className="even:bg-slate-100 hover:bg-blue-50 border-b text-sm border-gray-200"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <Image
-          src={item.img || "/noAvatar.png"}
-          alt=""
-          width={40}
-          height={40}
-          className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
+    <Toolbar>
+      <Typography fontWeight="bold" sx={{ flex: 1, mx: 0.5 }}>
+        STUDENTS
+      </Typography>
+      <Tooltip title="Columns">
+        <ColumnsPanelTrigger render={<ToolbarButton />}>
+          <ViewColumnIcon fontSize="small" />
+        </ColumnsPanelTrigger>
+      </Tooltip>
+
+      <Tooltip title="Filters">
+        <FilterPanelTrigger
+          render={(props, state) => (
+            <ToolbarButton {...props} color="default">
+              <Badge
+                badgeContent={state.filterCount}
+                color="primary"
+                variant="dot"
+              >
+                <FilterListIcon fontSize="small" />
+              </Badge>
+            </ToolbarButton>
+          )}
         />
-        <div className="flex flex-col">
-          <h2 className=" font-semibold">{item.name}</h2>
-          <p className=" text-xs text-gray-600">{item.class.name}</p>
-        </div>
-      </td>
-      <td className="hidden md:table-cell">{item.id}</td>
-      <td className="hidden md:table-cell">{item.grade.level}</td>
-      <td className="hidden md:table-cell">{item.phone}</td>
-      <td className="hidden md:table-cell">{item.address}</td>
-      <td>
-        <div className="flex items-center gap-3">
-          <Link href={`/list/students/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full object-cover bg-green-200 cursor-pointer">
-              <Image src={"/view.png"} alt="" width={15} height={15} />
-            </button>
-          </Link>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 cursor-pointer">
-            <Image src="/delete.png" alt="" width={15} height={15} />
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
-};
+      </Tooltip>
 
-const StudentListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
-  const [data, count] = await prisma.$transaction([
-    prisma.student.findMany({
-      include: {
-        class: true,
-        grade: true,
+      <Divider
+        orientation="vertical"
+        variant="middle"
+        flexItem
+        sx={{ mx: 0.5 }}
+      />
+
+      <Tooltip title="Export">
+        <ToolbarButton
+          ref={exportMenuTriggerRef}
+          id="export-menu-trigger"
+          aria-controls="export-menu"
+          aria-haspopup="true"
+          aria-expanded={exportMenuOpen ? "true" : undefined}
+          onClick={() => setExportMenuOpen(true)}
+        >
+          <FileDownloadIcon fontSize="small" />
+        </ToolbarButton>
+      </Tooltip>
+
+      <Menu
+        id="export-menu"
+        anchorEl={exportMenuTriggerRef.current}
+        open={exportMenuOpen}
+        onClose={() => setExportMenuOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{
+          list: {
+            "aria-labelledby": "export-menu-trigger",
+          },
+        }}
+      >
+        <ExportPrint
+          render={<MenuItem />}
+          onClick={() => setExportMenuOpen(false)}
+        >
+          Print
+        </ExportPrint>
+        <ExportCsv
+          render={<MenuItem />}
+          onClick={() => setExportMenuOpen(false)}
+        >
+          Download as CSV
+        </ExportCsv>
+      </Menu>
+
+      <StyledQuickFilter>
+        <QuickFilterTrigger
+          render={(triggerProps, state) => (
+            <Tooltip title="Search" enterDelay={0}>
+              <StyledToolbarButton
+                {...triggerProps}
+                ownerState={{ expanded: state.expanded }}
+                color="default"
+                aria-disabled={state.expanded}
+              >
+                <SearchIcon fontSize="small" />
+              </StyledToolbarButton>
+            </Tooltip>
+          )}
+        />
+        <QuickFilterControl
+          render={({ ref, ...controlProps }, state) => (
+            <StyledTextField
+              {...controlProps}
+              ownerState={{ expanded: state.expanded }}
+              inputRef={ref}
+              aria-label="Search"
+              placeholder="Search..."
+              size="small"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: state.value ? (
+                    <InputAdornment position="end">
+                      <QuickFilterClear
+                        edge="end"
+                        size="small"
+                        aria-label="Clear search"
+                        material={{ sx: { marginRight: -0.75 } }}
+                      >
+                        <CancelIcon fontSize="small" />
+                      </QuickFilterClear>
+                    </InputAdornment>
+                  ) : null,
+                  ...controlProps.slotProps?.input,
+                },
+                ...controlProps.slotProps,
+              }}
+            />
+          )}
+        />
+      </StyledQuickFilter>
+    </Toolbar>
+  );
+}
+const Students = () => {
+  const { data: studentData, isLoading, isError } = useGetStudentsQuery();
+  if (isLoading) return <LoadingSpinner color="pink" size="small" />;
+  // if (isError) return <NotFound />;
+  const columns: GridColDef[] = [
+    {
+      field: "username",
+      headerName: "Username",
+      width: 120,
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 120,
+    },
+    {
+      field: "surname",
+      headerName: "Surname",
+      width: 120,
+    },
+    {
+      field: "birthday",
+      headerName: "Birthday",
+      width: 90,
+
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      width: 150,
+    },
+    {
+      field: "phone",
+      headerName: "Phone",
+      width: 150,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      width: 150,
+    },
+    {
+      field: "class_name",
+      headerName: "Class",
+      width:70,
+    },
+    {
+      field: "parent",
+      headerName: "Parent Phone Number",
+      width: 150,
+      renderCell: (cellValues: GridRenderCellParams<Parent>) => {
+        return (
+          <div>{cellValues.value.map((p:{phone:any}) => p.phone) || []}</div>
+        );
       },
-      take: ITEMS_PER_PAGE,
-      skip: ITEMS_PER_PAGE * (p - 1),
-    }),
-    prisma.student.count(),
-  ]);
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      renderCell: (params) => {
+        return <StudentActions {...{ params }} />;
+      },
+    },
+  ];
   return (
-    <div className="bg-white p-4 rounded-md m-4 flex-1 mt-0">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold hidden md:block">All Students</h1>
-        <div className="flex flex-col md:flex-row w-full md:w-auto justify-between gap-5 items-center">
-          <TableSearch />
-          <div className="flex items-center gap-5 self-end">
-            <button className="bg-amber-200 rounded-full object-cover p-2 w-8 h-8 cursor-pointer">
-              <Image src={`/filter.png`} alt="" width={20} height={20} />
-            </button>
-            <button className="bg-amber-200 rounded-full w-8 h-8 object-cover p-2 cursor-pointer">
-              <Image src={"/sort.png"} alt="" width={20} height={20} />
-            </button>
-            <button className="bg-amber-200 rounded-full w-8 h-8 object-cover p-2 cursor-pointer">
-              <Image src={"/create.png"} alt="" width={20} height={20} />
-            </button>
-          </div>
-        </div>
+    <>
+      {/* Header */}
+      <div className="">
+        <TableHeader index={2} />
       </div>
-      <Table columns={columns} renderRow={RenderRow} data={data} />
-      <Pagination page={p} count={count}/>
-    </div>
+      <div style={{ height: 520, width: "100%" }}>
+        <DataGrid
+          rows={studentData}
+          showToolbar
+          columns={columns}
+          slots={{
+            toolbar: CustomToolbar,
+          }}
+          pagination
+        />
+      </div>
+    </>
   );
 };
 
-export default StudentListPage;
+export default Students;

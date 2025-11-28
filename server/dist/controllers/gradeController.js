@@ -9,22 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getClass = void 0;
+exports.getGrade = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const getClass = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getGrade = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const classes = yield prisma.class.findMany({
-            orderBy: {
-                name: "asc"
-            }
-        });
-        res.status(200).json(classes);
+        const grade = yield prisma.grade.findMany();
+        res.status(200).json(grade);
     }
     catch (error) {
         res
             .status(404)
-            .json({ message: `Error retrieving classes: ${error.message}` });
+            .json(`message: Error while retrieving grades: ${error.message}`);
     }
 });
-exports.getClass = getClass;
+exports.getGrade = getGrade;

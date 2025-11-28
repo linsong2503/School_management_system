@@ -30,16 +30,24 @@ export interface Student {
   address: string;
   img?: string;
   bloodType: string;
+  birthday:string;
   sex: string;
   createdAt: Date;
   updatedAt?: Date;
-  parentId: number;
-  parent: Parent;
-  classId: number;
-  className: Class;
+  parentId?: number;
+  p_username: string;
+  p_name: string;
+  p_surname: string;
+  p_email: string;
+  parentPhone: string;
+  p_address: string;
+  parent: Parent[];
+  class_name: string;
+  class: Class;
   gradeId: number;
   grade: Grade;
   attendances: Attendance;
+  st: string;
 }
 
 export interface Subject {
@@ -59,7 +67,7 @@ export interface Parent {
   createdAt?: Date;
   updatedAt?: Date;
   st: string;
-  // students: Student[];
+  students: Student[];
 }
 
 export interface Class {
@@ -150,6 +158,7 @@ export const api = createApi({
   tagTypes: [
     "Teachers",
     "Students",
+    "Grades",
     "Classes",
     "Subjects",
     "Parents",
@@ -218,22 +227,25 @@ export const api = createApi({
       invalidatesTags: ["Students"],
     }),
 
-    // Class API
+    // Grade API
+    getGrades: build.query<Grade[], void>({
+      query: () => "grade",
+      providesTags: ["Grades"],
+    }),
 
+    // Class API
     getClasses: build.query<Class[], void>({
       query: () => "classes",
       providesTags: ["Classes"],
     }),
 
     //  Subject API
-
     getSubjects: build.query<Subject[], void>({
       query: () => "subjects",
       providesTags: ["Subjects"],
     }),
 
     // Parent API
-
     getParents: build.query<Parent[], void>({
       query: () => "parents",
       providesTags: ["Parents"],
@@ -276,7 +288,6 @@ export const api = createApi({
     }),
 
     //  Event API
-
     getEvents: build.query<Event[], void>({
       query: () => "events",
       providesTags: ["Events"],
@@ -290,6 +301,10 @@ export const {
   useCreateTeacherMutation,
   useUpdateTeacherMutation,
   useGetStudentsQuery,
+  useGetStudentByIdQuery,
+  useCreateStudentMutation,
+  useUpdateStudentMutation,
+  useGetGradesQuery,
   useGetClassesQuery,
   useGetSubjectsQuery,
   useGetParentsQuery,

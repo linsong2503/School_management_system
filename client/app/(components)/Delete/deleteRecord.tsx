@@ -14,8 +14,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-import { useUpdateTeacherMutation } from "@/state/api";
-import { toast } from "react-toastify";
+import { useUpdateTeacherMutation,useUpdateStudentMutation } from "@/state/api";
+import { toast } from "sonner";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -47,7 +47,7 @@ const DeleteDialog = ({ opt, id, isOpen, onClose }: Props) => {
       break;
   }
   const [deleteTeacher, { error, isSuccess }] = useUpdateTeacherMutation();
-  // const [deleteParent] = useUpdateParentMutation();
+  const [deleteStudent] = useUpdateStudentMutation();
   const [st] = useState("I");
   const handleClick = async () => {
     switch (opt) {
@@ -57,14 +57,26 @@ const DeleteDialog = ({ opt, id, isOpen, onClose }: Props) => {
           st: st,
         });
         if (error) {
-          toast("Something went wrong")
+          toast.error("Something went wrong")
         };
         if (isSuccess) {
-          toast("Successfully delete teacher");
+          toast.success("Successfully delete teacher information");
         }
         break;
 
       default:
+        break;
+      case 2:
+        await deleteStudent({
+          studentId: id,
+          st: st,
+        });
+        if (error) {
+          toast.error("Something went wrong")
+        };
+        if (isSuccess) {
+          toast.success("Successfully delete teacher information");
+        }
         break;
     }
     // await deleteParent({
