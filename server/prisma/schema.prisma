@@ -7,41 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Admin {
-  id       String @id
+model User {
+  id       Int    @id @default(autoincrement())
   username String @unique
+  password String @unique
+  email    String
+  role     String
   st       String
 }
 
 model Student {
-  id          Int          @id @default(autoincrement())
-  username    String       @unique
-  name        String
-  surname     String
-  email       String?      @unique
-  phone       String?      @unique
-  address     String
-  img         String?
-  bloodType   String
-  sex         String
-  createdAt   DateTime
-  updatedAt   DateTime
-  parentId    Int?
-  parent      Parent[]
-  class_name  String
+  id              Int          @id @default(autoincrement())
+  name            String
+  surname         String
+  email           String?      @unique
+  phone           String?      @unique
+  address         String
+  img             String?
+  bloodType       String
+  sex             String
+  createdAt       DateTime
+  updatedAt       DateTime
+  parentId        Int?
+  parent          Parent[]
+  class_name      String
   parent_phoneNum String?
-  class       Class        @relation(fields: [class_name], references: [name])
-  gradeId     Int
-  grade       Grade        @relation(fields: [gradeId], references: [id])
-  attendances Attendance[]
-  results     Result[]
-  birthday    String
-  st          String
+  class           Class        @relation(fields: [class_name], references: [name])
+  gradeId         Int
+  grade           Grade        @relation(fields: [gradeId], references: [id])
+  attendances     Attendance[]
+  results         Result[]
+  birthday        String
+  st              String
 }
 
 model Teacher {
   id        Int       @id @default(autoincrement())
-  username  String    @unique
   name      String
   surname   String
   email     String?   @unique
@@ -55,13 +56,12 @@ model Teacher {
   subjects  Subject[]
   lessons   Lesson[]
   classes   Class[]
-  birthday  DateTime  @db.Date
+  birthday  String
   st        String
 }
 
 model Parent {
   id        Int       @id @default(autoincrement())
-  username  String    @unique
   name      String
   surname   String
   email     String?   @unique
