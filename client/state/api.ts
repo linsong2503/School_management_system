@@ -1,8 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { SetStateAction } from "react";
-export interface Teacher {
+
+export interface User {
   id: string;
   username: string;
+  password: string;
+  email: string;
+  role: string;
+}
+export interface Teacher {
+  id: string;
   name: string;
   surname: string;
   email: string;
@@ -22,7 +29,6 @@ export interface Teacher {
 
 export interface Student {
   id: number;
-  username: string;
   name: string;
   surname: string;
   email: string;
@@ -30,12 +36,11 @@ export interface Student {
   address: string;
   img?: string;
   bloodType: string;
-  birthday:string;
+  birthday: string;
   sex: string;
   createdAt: Date;
   updatedAt?: Date;
   parentId?: number;
-  p_username: string;
   p_name: string;
   p_surname: string;
   p_email: string;
@@ -58,7 +63,6 @@ export interface Subject {
 
 export interface Parent {
   id: number;
-  username: string;
   name: string;
   surname: string;
   email: string;
@@ -153,14 +157,18 @@ export interface Attendance {
 }
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_API_URL,
+  }),
   reducerPath: "api",
+
   tagTypes: [
     "Teachers",
     "Students",
     "Grades",
     "Classes",
     "Subjects",
+    "Lessons",
     "Parents",
     "Events",
   ],
@@ -245,6 +253,16 @@ export const api = createApi({
       providesTags: ["Subjects"],
     }),
 
+    // Lesson API
+    getLessons: build.query<Lesson[], void>({
+      query: () => "lessons",
+      providesTags: ["Lessons"],
+    }),
+
+    getLessonsById: build.query({
+      query: (id) => `/lessons/${id}`,
+    }),
+
     // Parent API
     getParents: build.query<Parent[], void>({
       query: () => "parents",
@@ -307,6 +325,8 @@ export const {
   useGetGradesQuery,
   useGetClassesQuery,
   useGetSubjectsQuery,
+  useGetLessonsQuery,
+  useGetLessonsByIdQuery,
   useGetParentsQuery,
   useGetParentByIdQuery,
   useUpdateParentMutation,

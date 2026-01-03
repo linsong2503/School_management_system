@@ -2,11 +2,10 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/state";
-import { Bell, Menu, Search, Settings } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Menu, Search } from "lucide-react";
 import React from "react";
-
+import { Profile } from "../Profile/profile";
+import { Notifications } from "../Notifications/notifications";
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const isSidebarCollapsed = useAppSelector(
@@ -18,7 +17,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between items-center w-full mb-7">
+    <div className="flex justify-between items-center w-full mb-1">
       {/* LEFT SIDE */}
       <div className="flex justify-between items-center gap-5">
         <button
@@ -43,28 +42,8 @@ const Navbar = () => {
 
       {/* RIGHT SIDE */}
       <div className="flex justify-between items-center gap-5">
-        <div className="hidden md:flex justify-between items-center gap-5">
-          <div className="relative">
-            <Bell className="cursor-pointer text-gray-500" size={24} />
-            <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-[0.4rem] py-1 text-xs font-semibold leading-none text-red-100 bg-red-400 rounded-full">
-              3
-            </span>
-          </div>
-          <hr className="w-0 h-7 border border-solid border-l border-gray-300 mx-3" />
-          <div className="flex items-center gap-3 cursor-pointer">
-            <Image
-              src="/avatars/avatar.png"
-              alt="Profile"
-              width={50}
-              height={50}
-              className="rounded-full h-full object-cover"
-            />
-            <span className="font-semibold">Admin</span>
-          </div>
-        </div>
-        <Link href="/settings">
-          <Settings className="cursor-pointer text-gray-500" size={24} />
-        </Link>
+        <Notifications />
+        <Profile />
       </div>
     </div>
   );

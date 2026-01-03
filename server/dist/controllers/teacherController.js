@@ -43,6 +43,15 @@ const getTeacherById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             where: {
                 id: ID,
             },
+            include: {
+                _count: {
+                    select: {
+                        subjects: true,
+                        lessons: true,
+                        classes: true
+                    }
+                }
+            }
         });
         res.status(200).json(teacher);
     }

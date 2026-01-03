@@ -5,7 +5,6 @@ import { setIsSidebarCollapsed } from "@/state";
 import {
   Users,
   GraduationCap,
-  // LucideIcon,
   Menu,
   User,
   Home,
@@ -35,8 +34,8 @@ const SidebarItems = [
       {
         icon: <Home />,
         label: "Home",
-        href: "/",
-        visible: ["admin", "teacher", "student", "parent"],
+        href: "/admin",
+        visible: ["admin"],
       },
       {
         icon: <GraduationCap />,

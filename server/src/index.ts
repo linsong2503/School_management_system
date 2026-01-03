@@ -24,6 +24,7 @@ import classRoute from "./routes/classRoute";
 import eventRoute from "./routes/eventRoute";
 import subjectRoute from "./routes/subjectRoute";
 import gradeRoute from "./routes/gradeRoute";
+import lessonRoute from "./routes/lessonsRoute";
 // Routes
 app.get("/", (req, res) => {
   res.send("This is home route");
@@ -35,6 +36,7 @@ app.use("/parents", parentRoute);
 app.use("/events", eventRoute);
 app.use("/subjects", subjectRoute);
 app.use("/grade", gradeRoute);
+app.use("/lessons", lessonRoute);
 /* Server */
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

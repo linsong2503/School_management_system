@@ -27,6 +27,7 @@ const classRoute_1 = __importDefault(require("./routes/classRoute"));
 const eventRoute_1 = __importDefault(require("./routes/eventRoute"));
 const subjectRoute_1 = __importDefault(require("./routes/subjectRoute"));
 const gradeRoute_1 = __importDefault(require("./routes/gradeRoute"));
+const lessonsRoute_1 = __importDefault(require("./routes/lessonsRoute"));
 // Routes
 app.get("/", (req, res) => {
     res.send("This is home route");
@@ -38,6 +39,7 @@ app.use("/parents", parentRoute_1.default);
 app.use("/events", eventRoute_1.default);
 app.use("/subjects", subjectRoute_1.default);
 app.use("/grade", gradeRoute_1.default);
+app.use("/lessons", lessonsRoute_1.default);
 /* Server */
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

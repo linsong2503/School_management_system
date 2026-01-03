@@ -2,7 +2,6 @@
 import { useCreateTeacherMutation, useGetSubjectsQuery } from "@/state/api";
 import { bloodTypes, genders } from "@/lib/data";
 import React, { useState } from "react";
-import { formatISO } from "date-fns";
 import Modal from "./modal";
 import LoadingSpinner from "../Loading";
 import { CldUploadWidget } from "next-cloudinary";
@@ -46,10 +45,6 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
   }
 
   const handleSubmit = async () => {
-    // Convert date input into ISO format
-    const formattedBirthDay = formatISO(new Date(birthday), {
-      representation: "complete",
-    });
     await createTeacher({
       username,
       name,
@@ -58,7 +53,7 @@ const ModalNewTeacher = ({ isOpen, onClose }: Props) => {
       phone,
       address,
       img: img,
-      birthday: formattedBirthDay,
+      birthday: birthday,
       sex: gender,
       bloodType,
       subjects: subject,

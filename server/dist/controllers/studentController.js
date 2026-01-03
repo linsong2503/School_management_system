@@ -102,6 +102,7 @@ const createStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     updatedAt,
                     st,
                     class_name: class_name,
+                    parent_phoneNum: parentPhone,
                     parent: {
                         connectOrCreate: {
                             where: { phone: parentPhone },

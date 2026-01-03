@@ -19,6 +19,7 @@ const TableHeader = ({ index }: Props) => {
           />
           <div className="pb-6 pt-3 lg:pb-2 lg:pt-2">
             <Header
+              name=""
               buttonComponent={
                 <button
                   className="flex items-center rounded-md bg-blue-700 px-3 py-2 text-white hover:bg-blue-500"
@@ -40,7 +41,7 @@ const TableHeader = ({ index }: Props) => {
           />
           <div className="pb-6 pt-2 lg:pb-2 lg:pt-2">
             <Header
-              
+              name=""
               buttonComponent={
                 <button
                   className="flex items-center rounded-md bg-blue-700 px-3 py-2 text-white hover:bg-blue-500"
@@ -62,6 +63,7 @@ const TableHeader = ({ index }: Props) => {
           />
           <div className="pb-6 pt-3 lg:pb-4 lg:pt-4">
             <Header
+              name=""
               buttonComponent={
                 <button
                   className="flex items-center rounded-md bg-blue-700 px-3 py-2 text-white hover:bg-blue-500"

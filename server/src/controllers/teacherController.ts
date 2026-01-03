@@ -37,6 +37,15 @@ export const getTeacherById = async (
       where: {
         id: ID,
       },
+      include:{
+        _count:{
+          select:{
+            subjects:true,
+            lessons:true,
+            classes:true
+          }
+        }
+      }
     });
     res.status(200).json(teacher);
   } catch (e: any) {
